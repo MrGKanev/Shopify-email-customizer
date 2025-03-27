@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopify Email Customizer</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/mode-html.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/theme-monokai.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+  <style>
+    #editor {
+      height: calc(100vh - 12rem);
+      width: 100%;
+    }
+
+    #preview-frame {
+      height: calc(100vh - 12rem);
+      width: 100%;
+      border: 1px solid #e2e8f0;
+      background-color: white;
+    }
+
+    .resizer {
+      background-color: #cbd5e0;
+      cursor: col-resize;
+      width: 4px;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+  <header class="bg-blue-600 text-white p-4">
+    <div class="container mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-bold">Shopify Email Customizer</h1>
+      <div class="space-x-2">
+        <button id="save-btn" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded">Save Template</button>
+        <button id="preview-btn" class="bg-purple-500 hover:bg-purple-600 px-4 py-2 rounded">Update Preview</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container mx-auto p-4">
+
+    <div class="flex flex-col md:flex-row bg-white rounded-lg shadow-lg">
+      <div id="left-panel" class="md:w-1/2 p-4 border-r border-gray-200">
+        <h2 class="text-lg font-semibold mb-2">Email Preview</h2>
+        <div class="mb-2 flex items-center space-x-2">
+          <button id="mobile-view" class="p-1 rounded border border-gray-300 hover:bg-gray-100">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            </svg>
+          </button>
+          <button id="desktop-view" class="p-1 rounded border border-gray-300 hover:bg-gray-100 bg-gray-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </button>
+        </div>
+        <div id="preview-container" class="w-full overflow-auto">
+          <iframe id="preview-frame" class="w-full"></iframe>
+        </div>
+      </div>
+
+      <div class="resizer" id="resizer"></div>
+
+      <div id="right-panel" class="md:w-1/2 p-4">
+        <h2 class="text-lg font-semibold mb-2">Email Code</h2>
+        <div class="mb-2">
+          <select id="template-elements" class="p-2 border rounded">
+            <option value="" selected disabled>Insert Template Element</option>
+            <option value="header">Header</option>
+            <option value="order-details">Order Details</option>
+            <option value="product-row">Product Row</option>
+            <option value="customer-info">Customer Information</option>
+            <option value="shipping-info">Shipping Information</option>
+            <option value="footer">Footer</option>
+          </select>
+        </div>
+        <div id="editor"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast hidden fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded shadow-lg" id="toast">
+    Template saved successfully!
+  </div>
+
+  <script>
+    // Initialize Ace Editor
+    const editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    editor.session.setMode("ace/mode/html");
+
+    // Default template HTML
+    const defaultTemplate = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ shop.name }} - Order Confirmation</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            line-height: 1.5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            max-width: 150px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .order-info {
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .order-details {
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        th {
+            background-color: #f1f5f9;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 14px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="{{ shop.email_logo_url }}" alt="{{ shop.name }}" class="logo">
+            <h1>Your Order is Confirmed!</h1>
+            <p>Hey {{ customer.first_name }}, thank you for your purchase.</p>
+        </div>
+        
+        <div class="order-info">
+            <p><strong>Order Number:</strong> {{ order.name }}</p>
+            <p><strong>Order Date:</strong> {{ order.created_at | date: "%B %d, %Y" }}</p>
+            <p><strong>Payment Method:</strong> {{ order.transactions[0].gateway }}</p>
+        </div>
+        
+        <div class="order-details">
+            <h2>Order Summary</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for line_item in order.line_items %}
+                    <tr>
+                        <td>
+                            {{ line_item.title }}
+                            {% if line_item.variant.title != 'Default Title' %}
+                                <br><small>{{ line_item.variant.title }}</small>
+                            {% endif %}
+                        </td>
+                        <td>{{ line_item.quantity }}</td>
+                        <td>{{ line_item.price | money }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2"><strong>Subtotal</strong></td>
+                        <td>{{ order.subtotal_price | money }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><strong>Shipping</strong></td>
+                        <td>{{ order.shipping_price | money }}</td>
+                    </tr>
+                    {% if order.tax_price > 0 %}
+                    <tr>
+                        <td colspan="2"><strong>Tax</strong></td>
+                        <td>{{ order.tax_price | money }}</td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <td colspan="2"><strong>Total</strong></td>
+                        <td>{{ order.total_price | money }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        
+        <div class="shipping-info">
+            <h2>Shipping Information</h2>
+            <p>
+                {{ order.shipping_address.name }}<br>
+                {{ order.shipping_address.address1 }}<br>
+                {% if order.shipping_address.address2 != "" %}
+                    {{ order.shipping_address.address2 }}<br>
+                {% endif %}
+                {{ order.shipping_address.city }}, {{ order.shipping_address.province_code }} {{ order.shipping_address.zip }}<br>
+                {{ order.shipping_address.country }}
+            </p>
+            <p><strong>Shipping Method:</strong> {{ order.shipping_lines[0].title }}</p>
+        </div>
+        
+        <div class="footer">
+            <p>If you have any questions, reply to this email or contact us at {{ shop.email }}</p>
+            <p>&copy; {{ 'now' | date: "%Y" }} {{ shop.name }}. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>`;
+
+    // Set default template
+    editor.setValue(defaultTemplate);
+    editor.clearSelection();
+
+    // Update preview on load
+    updatePreview();
+
+    // Auto update preview when editor changes
+    editor.session.on('change', function () {
+      updatePreview();
+    });
+
+    // Preview button click handler (kept for redundancy)
+    $('#preview-btn').on('click', function () {
+      updatePreview();
+    });
+
+    // Save button click handler
+    $('#save-btn').on('click', function () {
+      const toast = $('#toast');
+      toast.removeClass('hidden');
+      setTimeout(() => {
+        toast.addClass('hidden');
+      }, 3000);
+    });
+
+    // Update preview function
+    function updatePreview() {
+      const previewFrame = document.getElementById('preview-frame');
+      const previewDocument = previewFrame.contentDocument || previewFrame.contentWindow.document;
+      previewDocument.open();
+
+      // Replace Liquid tags with sample data for preview
+      let html = editor.getValue()
+        .replace(/{{ shop.name }}/g, 'Your Shopify Store')
+        .replace(/{{ shop.email_logo_url }}/g, 'https://via.placeholder.com/150x50')
+        .replace(/{{ customer.first_name }}/g, 'John')
+        .replace(/{{ order.name }}/g, '#1001')
+        .replace(/{{ order.created_at \| date: "%B %d, %Y" }}/g, 'March 27, 2025')
+        .replace(/{{ order.transactions\[0\].gateway }}/g, 'Credit Card')
+        .replace(/{{ line_item.title }}/g, 'Sample Product')
+        .replace(/{{ line_item.variant.title }}/g, 'Blue / Medium')
+        .replace(/{{ line_item.quantity }}/g, '1')
+        .replace(/{{ line_item.price \| money }}/g, '$29.99')
+        .replace(/{{ order.subtotal_price \| money }}/g, '$29.99')
+        .replace(/{{ order.shipping_price \| money }}/g, '$5.00')
+        .replace(/{{ order.tax_price \| money }}/g, '$3.50')
+        .replace(/{{ order.total_price \| money }}/g, '$38.49')
+        .replace(/{{ order.shipping_address.name }}/g, 'John Doe')
+        .replace(/{{ order.shipping_address.address1 }}/g, '123 Main Street')
+        .replace(/{{ order.shipping_address.address2 }}/g, 'Apt 4B')
+        .replace(/{{ order.shipping_address.city }}/g, 'New York')
+        .replace(/{{ order.shipping_address.province_code }}/g, 'NY')
+        .replace(/{{ order.shipping_address.zip }}/g, '10001')
+        .replace(/{{ order.shipping_address.country }}/g, 'United States')
+        .replace(/{{ order.shipping_lines\[0\].title }}/g, 'Standard Shipping')
+        .replace(/{{ shop.email }}/g, 'support@yourstore.com')
+        .replace(/{{ 'now' \| date: "%Y" }}/g, '2025');
+
+      // Handle Liquid for loops
+      html = html.replace(/{% for line_item in order.line_items %}([\s\S]*?){% endfor %}/g, (match, content) => {
+        // Just repeat the content 3 times for preview
+        return content + content + content;
+      });
+
+      // Handle Liquid if statements
+      html = html.replace(/{% if (.*?) %}([\s\S]*?){% endif %}/g, (match, condition, content) => {
+        // For preview, just include the content
+        return content;
+      });
+
+      previewDocument.write(html);
+      previewDocument.close();
+    }
+
+    // Responsive view buttons
+    $('#mobile-view').on('click', function () {
+      $(this).addClass('bg-gray-200');
+      $('#desktop-view').removeClass('bg-gray-200');
+      $('#preview-frame').css('width', '375px');
+    });
+
+    $('#desktop-view').on('click', function () {
+      $(this).addClass('bg-gray-200');
+      $('#mobile-view').removeClass('bg-gray-200');
+      $('#preview-frame').css('width', '100%');
+    });
+
+    // Template elements dropdown
+    $('#template-elements').on('change', function () {
+      const value = $(this).val();
+      if (!value) return;
+
+      let snippet = '';
+
+      switch (value) {
+        case 'header':
+          snippet = `<div class="header">
+    <img src="{{ shop.email_logo_url }}" alt="{{ shop.name }}" class="logo">
+    <h1>Your Order is Confirmed!</h1>
+    <p>Hey {{ customer.first_name }}, thank you for your purchase.</p>
+</div>`;
+          break;
+        case 'order-details':
+          snippet = `<div class="order-details">
+    <h2>Order Summary</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for line_item in order.line_items %}
+            <tr>
+                <td>
+                    {{ line_item.title }}
+                    {% if line_item.variant.title != 'Default Title' %}
+                        <br><small>{{ line_item.variant.title }}</small>
+                    {% endif %}
+                </td>
+                <td>{{ line_item.quantity }}</td>
+                <td>{{ line_item.price | money }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2"><strong>Subtotal</strong></td>
+                <td>{{ order.subtotal_price | money }}</td>
+            </tr>
+            <tr>
+                <td colspan="2"><strong>Shipping</strong></td>
+                <td>{{ order.shipping_price | money }}</td>
+            </tr>
+            {% if order.tax_price > 0 %}
+            <tr>
+                <td colspan="2"><strong>Tax</strong></td>
+                <td>{{ order.tax_price | money }}</td>
+            </tr>
+            {% endif %}
+            <tr>
+                <td colspan="2"><strong>Total</strong></td>
+                <td>{{ order.total_price | money }}</td>
+            </tr>
+        </tfoot>
+    </table>
+</div>`;
+          break;
+        case 'product-row':
+          snippet = `<tr>
+    <td>
+        {{ line_item.title }}
+        {% if line_item.variant.title != 'Default Title' %}
+            <br><small>{{ line_item.variant.title }}</small>
+        {% endif %}
+    </td>
+    <td>{{ line_item.quantity }}</td>
+    <td>{{ line_item.price | money }}</td>
+</tr>`;
+          break;
+        case 'customer-info':
+          snippet = `<div class="customer-info">
+    <h2>Customer Information</h2>
+    <p>
+        <strong>Name:</strong> {{ order.customer.name }}<br>
+        <strong>Email:</strong> {{ order.customer.email }}<br>
+        <strong>Phone:</strong> {{ order.customer.phone }}
+    </p>
+</div>`;
+          break;
+        case 'shipping-info':
+          snippet = `<div class="shipping-info">
+    <h2>Shipping Information</h2>
+    <p>
+        {{ order.shipping_address.name }}<br>
+        {{ order.shipping_address.address1 }}<br>
+        {% if order.shipping_address.address2 != "" %}
+            {{ order.shipping_address.address2 }}<br>
+        {% endif %}
+        {{ order.shipping_address.city }}, {{ order.shipping_address.province_code }} {{ order.shipping_address.zip }}<br>
+        {{ order.shipping_address.country }}
+    </p>
+    <p><strong>Shipping Method:</strong> {{ order.shipping_lines[0].title }}</p>
+</div>`;
+          break;
+        case 'footer':
+          snippet = `<div class="footer">
+    <p>If you have any questions, reply to this email or contact us at {{ shop.email }}</p>
+    <p>&copy; {{ 'now' | date: "%Y" }} {{ shop.name }}. All rights reserved.</p>
+</div>`;
+          break;
+      }
+
+      // Insert at cursor position
+      editor.insert(snippet);
+
+      // Reset dropdown
+      $(this).val('');
+    });
+
+    // Panel resizing functionality
+    const leftPanel = document.getElementById('left-panel');
+    const rightPanel = document.getElementById('right-panel');
+    const resizer = document.getElementById('resizer');
+    let isResizing = false;
+
+    resizer.addEventListener('mousedown', (e) => {
+      isResizing = true;
+      document.body.style.cursor = 'col-resize';
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isResizing) return;
+
+      const containerWidth = leftPanel.parentElement.clientWidth;
+      const newLeftPanelWidth = (e.clientX / containerWidth) * 100;
+
+      leftPanel.style.width = `${newLeftPanelWidth}%`;
+      rightPanel.style.width = `${100 - newLeftPanelWidth}%`;
+
+      editor.resize();
+    });
+
+    document.addEventListener('mouseup', () => {
+      isResizing = false;
+      document.body.style.cursor = 'default';
+    });
+  </script>
+</body>
+
+</html>
