@@ -2,88 +2,6 @@
 <html lang="en">
 
 <head>
-
-  <!-- Liquid Variables Modal -->
-  <div id="liquid-vars-modal"
-    class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50">
-    <div class="relative mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-medium">Liquid Variables for Email Templates</h3>
-        <button class="close-modal text-gray-400 hover:text-gray-500">
-          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
-        </button>
-      </div>
-      <div class="grid grid-cols-1 gap-4 max-h-96 overflow-y-auto">
-        <div class="border rounded p-3 hover:bg-gray-50 cursor-pointer liquid-var-item">
-          <h4 class="font-bold">shop.name</h4>
-          <p class="text-sm text-gray-600">The name of your Shopify store</p>
-          <code class="text-xs bg-gray-100 p-1 mt-1">{{ shop.name }}</code>
-        </div>
-        <div class="border rounded p-3 hover:bg-gray-50 cursor-pointer liquid-var-item">
-          <h4 class="font-bold">shop.email</h4>
-          <p class="text-sm text-gray-600">The email address of your Shopify store</p>
-          <code class="text-xs bg-gray-100 p-1 mt-1">{{ shop.email }}</code>
-        </div>
-        <div class="border rounded p-3 hover:bg-gray-50 cursor-pointer liquid-var-item">
-          <h4 class="font-bold">shop.address</h4>
-          <p class="text-sm text-gray-600">The address of your Shopify store</p>
-          <code class="text-xs bg-gray-100 p-1 mt-1">{{ shop.address }}</code>
-        </div>
-        <div class="border rounded p-3 hover:bg-gray-50 cursor-pointer liquid-var-item">
-          <h4 class="font-bold">shop.email_logo_url</h4>
-          <p class="text-sm text-gray-600">URL to the logo you've set for email notifications</p>
-          <code class="text-xs bg-gray-100 p-1 mt-1">{{ shop.email_logo_url }}</code>
-        </div>
-        <div class="border rounded p-3 hover:bg-gray-50 cursor-pointer liquid-var-item">
-          <h4 class="font-bold">customer.first_name</h4>
-          <p class="text-sm text-gray-600">The customer's first name</p>
-          <code class="text-xs bg-gray-100 p-1 mt-1">{{ customer.first_name }}</code>
-        </div>
-        <div class="border rounded p-3 hover:bg-gray-50 cursor-pointer liquid-var-item">
-          <h4 class="font-bold">customer.last_name</h4>
-          <p class="text-sm text-gray-600">The customer's last name</p>
-          <code class="text-xs bg-gray-100 p-1 mt-1">{{ customer.last_name }}</code>
-        </div>
-        <div class="border rounded p-3 hover:bg-gray-50 cursor-pointer liquid-var-item">
-          <h4 class="font-bold">customer.email</h4>
-          <p class="text-sm text-gray-600">The customer's email address</p>
-          <code class="text-xs bg-gray-100 p-1 mt-1">{{ customer.email }}</code>
-        </div>
-        <div class="border rounded p-3 hover:bg-gray-50 cursor-pointer liquid-var-item">
-          <h4 class="font-bold">order.name</h4>
-          <p class="text-sm text-gray-600">The order name, typically the order number</p>
-          <code class="text-xs bg-gray-100 p-1 mt-1">{{ order.name }}</code>
-        </div>
-        <div class="border rounded p-3 hover:bg-gray-50 cursor-pointer liquid-var-item">
-          <h4 class="font-bold">order.created_at</h4>
-          <p class="text-sm text-gray-600">The date and time when the order was created</p>
-          <code class="text-xs bg-gray-100 p-1 mt-1">{{ order.created_at | date: "%B %d, %Y" }}</code>
-        </div>
-        <div class="border rounded p-3 hover:bg-gray-50 cursor-pointer liquid-var-item">
-          <h4 class="font-bold">order.subtotal_price</h4>
-          <p class="text-sm text-gray-600">The order subtotal (excluding tax and shipping)</p>
-          <code class="text-xs bg-gray-100 p-1 mt-1">{{ order.subtotal_price | money }}</code>
-        </div>
-        <div class="border rounded p-3 hover:bg-gray-50 cursor-pointer liquid-var-item">
-          <h4 class="font-bold">order.total_price</h4>
-          <p class="text-sm text-gray-600">The order total price</p>
-          <code class="text-xs bg-gray-100 p-1 mt-1">{{ order.total_price | money }}</code>
-        </div>
-        <div class="border rounded p-3 hover:bg-gray-50 cursor-pointer liquid-var-item">
-          <h4 class="font-bold">order.shipping_price</h4>
-          <p class="text-sm text-gray-600">The shipping cost for the order</p>
-          <code class="text-xs bg-gray-100 p-1 mt-1">{{ order.shipping_price | money }}</code>
-        </div>
-        <div class="border rounded p-3 hover:bg-gray-50 cursor-pointer liquid-var-item">
-          <h4 class="font-bold">order.note</h4>
-          <p class="text-sm text-gray-600">Any additional notes made by the customer</p>
-          <code class="text-xs bg-gray-100 p-1 mt-1">{{ order.note }}</code>
-        </div>
-      </div>
-    </div>
-  </div>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shopify Email Customizer</title>
@@ -92,25 +10,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/mode-html.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/theme-monokai.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-  <style>
-    #editor {
-      height: calc(100vh - 8rem);
-      width: 100%;
-    }
-
-    #preview-frame {
-      height: calc(100vh - 8rem);
-      width: 100%;
-      border: 1px solid #e2e8f0;
-      background-color: white;
-    }
-
-    .resizer {
-      background-color: #cbd5e0;
-      cursor: col-resize;
-      width: 4px;
-    }
-  </style>
+  <link href="css/style.css" rel="stylesheet">
 </head>
 
 <body class="bg-gray-100 min-h-screen">
@@ -129,7 +29,6 @@
   </header>
 
   <div class="w-full px-2">
-
     <div class="flex flex-col md:flex-row bg-white rounded-lg shadow-lg">
       <div id="left-panel" class="md:w-1/2 p-2 border-r border-gray-200">
         <h2 class="text-lg font-semibold mb-2">Email Preview</h2>
@@ -162,64 +61,30 @@
           <button id="template-elements-btn" class="w-full p-2 border rounded bg-gray-50 hover:bg-gray-100 text-left">
             Insert Template Element
           </button>
-          <!-- Template Elements Modal -->
-          <div id="template-elements-modal"
-            class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50">
-            <div class="relative mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
-              <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-medium">Template Elements</h3>
-                <button class="close-modal text-gray-400 hover:text-gray-500">
-                  <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                    </path>
-                  </svg>
-                </button>
-              </div>
-              <div class="grid grid-cols-1 gap-4 max-h-96 overflow-y-auto">
-                <div class="border rounded p-3 hover:bg-gray-50 cursor-pointer template-element-item"
-                  data-element="header">
-                  <h4 class="font-bold">Header</h4>
-                  <p class="text-sm text-gray-600">Email header with logo and welcome message</p>
-                </div>
-                <div class="border rounded p-3 hover:bg-gray-50 cursor-pointer template-element-item"
-                  data-element="order-details">
-                  <h4 class="font-bold">Order Details</h4>
-                  <p class="text-sm text-gray-600">Complete order summary with product list and totals</p>
-                </div>
-                <div class="border rounded p-3 hover:bg-gray-50 cursor-pointer template-element-item"
-                  data-element="product-row">
-                  <h4 class="font-bold">Product Row</h4>
-                  <p class="text-sm text-gray-600">Single product line with title, variant, quantity and price</p>
-                </div>
-                <div class="border rounded p-3 hover:bg-gray-50 cursor-pointer template-element-item"
-                  data-element="customer-info">
-                  <h4 class="font-bold">Customer Information</h4>
-                  <p class="text-sm text-gray-600">Customer contact details section</p>
-                </div>
-                <div class="border rounded p-3 hover:bg-gray-50 cursor-pointer template-element-item"
-                  data-element="shipping-info">
-                  <h4 class="font-bold">Shipping Information</h4>
-                  <p class="text-sm text-gray-600">Shipping address and method details</p>
-                </div>
-                <div class="border rounded p-3 hover:bg-gray-50 cursor-pointer template-element-item"
-                  data-element="footer">
-                  <h4 class="font-bold">Footer</h4>
-                  <p class="text-sm text-gray-600">Email footer with contact information and copyright</p>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
         <div id="editor"></div>
       </div>
     </div>
   </div>
 
-  <div class="toast hidden fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded shadow-lg" id="toast">
-    Template saved successfully!
+  <!-- Modals -->
+  <div id="template-elements-modal"
+    class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50">
+    <div class="relative mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-medium">Template Elements</h3>
+        <button class="close-modal text-gray-400 hover:text-gray-500">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <div id="template-elements-container" class="grid grid-cols-1 gap-4 max-h-96 overflow-y-auto">
+        <!-- Template elements will be inserted here via JavaScript -->
+      </div>
+    </div>
   </div>
 
-  <!-- Liquid Blocks Modal -->
   <div id="liquid-blocks-modal"
     class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50">
     <div class="relative mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
@@ -231,652 +96,41 @@
           </svg>
         </button>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-96 overflow-y-auto">
-        <div class="border rounded p-3 hover:bg-gray-50 cursor-pointer liquid-block-item">
-          <h4 class="font-bold">Order Discounts</h4>
-          <pre class="text-xs bg-gray-100 p-2 mt-2 overflow-x-auto">{% if order.discounts %}
-  <div class="discounts">
-    <h3>Discounts</h3>
-    <ul>
-      {% for discount in order.discounts %}
-        <li>{{ discount.title }} (-{{ discount.savings | money }})</li>
-      {% endfor %}
-    </ul>
-  </div>
-{% endif %}</pre>
-        </div>
-        <div class="border rounded p-3 hover:bg-gray-50 cursor-pointer liquid-block-item">
-          <h4 class="font-bold">Customer Note</h4>
-          <pre class="text-xs bg-gray-100 p-2 mt-2 overflow-x-auto">{% if order.note %}
-  <div class="customer-note">
-    <h3>Order Notes</h3>
-    <p>{{ order.note }}</p>
-  </div>
-{% endif %}</pre>
-        </div>
-        <div class="border rounded p-3 hover:bg-gray-50 cursor-pointer liquid-block-item">
-          <h4 class="font-bold">Shipping Address</h4>
-          <pre class="text-xs bg-gray-100 p-2 mt-2 overflow-x-auto">{% if order.shipping_address %}
-  <div class="shipping-address">
-    <h3>Shipping Address</h3>
-    <p>
-      {{ order.shipping_address.name }}<br>
-      {{ order.shipping_address.address1 }}<br>
-      {% if order.shipping_address.address2 != blank %}
-        {{ order.shipping_address.address2 }}<br>
-      {% endif %}
-      {{ order.shipping_address.city }}, {{ order.shipping_address.province_code }} {{ order.shipping_address.zip }}<br>
-      {{ order.shipping_address.country }}
-    </p>
-  </div>
-{% endif %}</pre>
-        </div>
-        <div class="border rounded p-3 hover:bg-gray-50 cursor-pointer liquid-block-item">
-          <h4 class="font-bold">Billing Address</h4>
-          <pre class="text-xs bg-gray-100 p-2 mt-2 overflow-x-auto">{% if order.billing_address %}
-  <div class="billing-address">
-    <h3>Billing Address</h3>
-    <p>
-      {{ order.billing_address.name }}<br>
-      {{ order.billing_address.address1 }}<br>
-      {% if order.billing_address.address2 != blank %}
-        {{ order.billing_address.address2 }}<br>
-      {% endif %}
-      {{ order.billing_address.city }}, {{ order.billing_address.province_code }} {{ order.billing_address.zip }}<br>
-      {{ order.billing_address.country }}
-    </p>
-  </div>
-{% endif %}</pre>
-        </div>
-        <div class="border rounded p-3 hover:bg-gray-50 cursor-pointer liquid-block-item">
-          <h4 class="font-bold">Payment Method</h4>
-          <pre class="text-xs bg-gray-100 p-2 mt-2 overflow-x-auto">{% if order.transactions.first.gateway %}
-  <div class="payment-method">
-    <h3>Payment Method</h3>
-    <p>{{ order.transactions.first.gateway | capitalize }}</p>
-  </div>
-{% endif %}</pre>
-        </div>
-        <div class="border rounded p-3 hover:bg-gray-50 cursor-pointer liquid-block-item">
-          <h4 class="font-bold">Shipping Method</h4>
-          <pre class="text-xs bg-gray-100 p-2 mt-2 overflow-x-auto">{% if order.shipping_lines.first.title %}
-  <div class="shipping-method">
-    <h3>Shipping Method</h3>
-    <p>{{ order.shipping_lines.first.title }}</p>
-  </div>
-{% endif %}</pre>
-        </div>
-        <div class="border rounded p-3 hover:bg-gray-50 cursor-pointer liquid-block-item">
-          <h4 class="font-bold">Order Fulfillments</h4>
-          <pre class="text-xs bg-gray-100 p-2 mt-2 overflow-x-auto">{% if order.fulfillments.size > 0 %}
-  <div class="fulfillments">
-    <h3>Fulfillment</h3>
-    {% for fulfillment in order.fulfillments %}
-      <div class="fulfillment">
-        <p><strong>Fulfillment #{{ forloop.index }}</strong></p>
-        {% if fulfillment.tracking_numbers.size > 0 %}
-          <p>
-            <strong>Tracking number:</strong>
-            {% for tracking_number in fulfillment.tracking_numbers %}
-              {% if fulfillment.tracking_url %}
-                <a href="{{ fulfillment.tracking_url }}">{{ tracking_number }}</a>
-              {% else %}
-                {{ tracking_number }}
-              {% endif %}
-              {% unless forloop.last %}, {% endunless %}
-            {% endfor %}
-          </p>
-        {% endif %}
-      </div>
-    {% endfor %}
-  </div>
-{% endif %}</pre>
-        </div>
-        <div class="border rounded p-3 hover:bg-gray-50 cursor-pointer liquid-block-item">
-          <h4 class="font-bold">Gift Card</h4>
-          <pre class="text-xs bg-gray-100 p-2 mt-2 overflow-x-auto">{% if order.total_price == 0 and order.transactions.first.kind == "authorization" and order.transactions.first.status == "success" %}
-  <div class="gift-card">
-    <h3>Gift Card</h3>
-    <p>This order was paid for using a gift card.</p>
-  </div>
-{% endif %}</pre>
-        </div>
+      <div id="liquid-blocks-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-96 overflow-y-auto">
+        <!-- Liquid blocks will be inserted here via JavaScript -->
       </div>
     </div>
   </div>
 
-  <script>
-    // Initialize Ace Editor
-    const editor = ace.edit("editor");
-    editor.setTheme("ace/theme/monokai");
-    editor.session.setMode("ace/mode/html");
-
-    // Default template HTML
-    const defaultTemplate = `<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ shop.name }} - Order Confirmation</title>
-    <style>
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            line-height: 1.5;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .logo {
-            max-width: 150px;
-            margin-bottom: 20px;
-        }
-        h1 {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-        .order-info {
-            background-color: #f8f9fa;
-            border-radius: 5px;
-            padding: 15px;
-            margin-bottom: 20px;
-        }
-        .order-details {
-            margin-bottom: 30px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        th {
-            background-color: #f1f5f9;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #e2e8f0;
-            font-size: 14px;
-            color: #64748b;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <img src="{{ shop.email_logo_url }}" alt="{{ shop.name }}" class="logo">
-            <h1>Your Order is Confirmed!</h1>
-            <p>Hey {{ customer.first_name }}, thank you for your purchase.</p>
-        </div>
-        
-        <div class="order-info">
-            <p><strong>Order Number:</strong> {{ order.name }}</p>
-            <p><strong>Order Date:</strong> {{ order.created_at | date: "%B %d, %Y" }}</p>
-            <p><strong>Payment Method:</strong> {{ order.transactions[0].gateway }}</p>
-        </div>
-        
-        <div class="order-details">
-            <h2>Order Summary</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Product</th>
-                        <th>Quantity</th>
-                        <th>Price</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for line_item in order.line_items %}
-                    <tr>
-                        <td>
-                            {{ line_item.title }}
-                            {% if line_item.variant.title != 'Default Title' %}
-                                <br><small>{{ line_item.variant.title }}</small>
-                            {% endif %}
-                        </td>
-                        <td>{{ line_item.quantity }}</td>
-                        <td>{{ line_item.price | money }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="2"><strong>Subtotal</strong></td>
-                        <td>{{ order.subtotal_price | money }}</td>
-                    </tr>
-                    <tr>
-                        <td colspan="2"><strong>Shipping</strong></td>
-                        <td>{{ order.shipping_price | money }}</td>
-                    </tr>
-                    {% if order.tax_price > 0 %}
-                    <tr>
-                        <td colspan="2"><strong>Tax</strong></td>
-                        <td>{{ order.tax_price | money }}</td>
-                    </tr>
-                    {% endif %}
-                    <tr>
-                        <td colspan="2"><strong>Total</strong></td>
-                        <td>{{ order.total_price | money }}</td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-        
-        <div class="shipping-info">
-            <h2>Shipping Information</h2>
-            <p>
-                {{ order.shipping_address.name }}<br>
-                {{ order.shipping_address.address1 }}<br>
-                {% if order.shipping_address.address2 != "" %}
-                    {{ order.shipping_address.address2 }}<br>
-                {% endif %}
-                {{ order.shipping_address.city }}, {{ order.shipping_address.province_code }} {{ order.shipping_address.zip }}<br>
-                {{ order.shipping_address.country }}
-            </p>
-            <p><strong>Shipping Method:</strong> {{ order.shipping_lines[0].title }}</p>
-        </div>
-        
-        <div class="footer">
-            <p>If you have any questions, reply to this email or contact us at {{ shop.email }}</p>
-            <p>&copy; {{ 'now' | date: "%Y" }} {{ shop.name }}. All rights reserved.</p>
-        </div>
+  <div id="liquid-vars-modal"
+    class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50">
+    <div class="relative mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-medium">Liquid Variables for Email Templates</h3>
+        <button class="close-modal text-gray-400 hover:text-gray-500">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <div id="liquid-vars-container" class="grid grid-cols-1 gap-4 max-h-96 overflow-y-auto">
+        <!-- Liquid variables will be inserted here via JavaScript -->
+      </div>
     </div>
-</body>
-</html>`;
+  </div>
 
-    // Set default template
-    editor.setValue(defaultTemplate);
-    editor.clearSelection();
+  <div class="toast hidden fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded shadow-lg" id="toast">
+    Template saved successfully!
+  </div>
 
-    // Update preview on load
-    updatePreview();
-
-    // Auto update preview when editor changes
-    editor.session.on('change', function () {
-      updatePreview();
-    });
-
-    // Preview button click handler (kept for redundancy)
-    $('#preview-btn').on('click', function () {
-      updatePreview();
-    });
-
-    // Save button click handler
-    $('#save-btn').on('click', function () {
-      const toast = $('#toast');
-      toast.removeClass('hidden');
-      setTimeout(() => {
-        toast.addClass('hidden');
-      }, 3000);
-    });
-
-    // Custom Liquid Blocks Modal
-    $('#liquid-blocks-btn').on('click', function () {
-      $('#liquid-blocks-modal').removeClass('hidden');
-    });
-
-    // Liquid Variables Modal
-    $('#liquid-vars-btn').on('click', function () {
-      $('#liquid-vars-modal').removeClass('hidden');
-    });
-
-    // Template Elements Modal
-    $('#template-elements-btn').on('click', function () {
-      $('#template-elements-modal').removeClass('hidden');
-    });
-
-    // Close Modals
-    $('.close-modal').on('click', function () {
-      $('#liquid-blocks-modal').addClass('hidden');
-      $('#liquid-vars-modal').addClass('hidden');
-      $('#template-elements-modal').addClass('hidden');
-    });
-
-    // Close modal when clicking outside
-    $(window).on('click', function (event) {
-      if ($(event.target).is('#liquid-blocks-modal') ||
-        $(event.target).is('#liquid-vars-modal') ||
-        $(event.target).is('#template-elements-modal')) {
-        $('.hidden').addClass('hidden');
-      }
-    });
-
-    // Add liquid block to editor
-    $('.liquid-block-item').on('click', function () {
-      const blockCode = $(this).find('pre').text();
-      editor.insert(blockCode);
-      $('#liquid-blocks-modal').addClass('hidden');
-    });
-
-    // Add liquid variable to editor
-    $('.liquid-var-item').on('click', function () {
-      const varCode = $(this).find('code').text();
-      editor.insert(varCode);
-      $('#liquid-vars-modal').addClass('hidden');
-    });
-
-    // Add template element to editor
-    $('.template-element-item').on('click', function () {
-      const element = $(this).data('element');
-      let snippet = '';
-
-      switch (element) {
-        case 'order-details':
-          snippet = `<div class="order-details">
-    <h2>Order Summary</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>Quantity</th>
-                <th>Price</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for line_item in order.line_items %}
-            <tr>
-                <td>
-                    {{ line_item.title }}
-                    {% if line_item.variant.title != 'Default Title' %}
-                        <br><small>{{ line_item.variant.title }}</small>
-                    {% endif %}
-                </td>
-                <td>{{ line_item.quantity }}</td>
-                <td>{{ line_item.price | money }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="2"><strong>Subtotal</strong></td>
-                <td>{{ order.subtotal_price | money }}</td>
-            </tr>
-            <tr>
-                <td colspan="2"><strong>Shipping</strong></td>
-                <td>{{ order.shipping_price | money }}</td>
-            </tr>
-            {% if order.tax_price > 0 %}
-            <tr>
-                <td colspan="2"><strong>Tax</strong></td>
-                <td>{{ order.tax_price | money }}</td>
-            </tr>
-            {% endif %}
-            <tr>
-                <td colspan="2"><strong>Total</strong></td>
-                <td>{{ order.total_price | money }}</td>
-            </tr>
-        </tfoot>
-    </table>
-</div>`;
-          break;
-        case 'product-row':
-          snippet = `<tr>
-    <td>
-        {{ line_item.title }}
-        {% if line_item.variant.title != 'Default Title' %}
-            <br><small>{{ line_item.variant.title }}</small>
-        {% endif %}
-    </td>
-    <td>{{ line_item.quantity }}</td>
-    <td>{{ line_item.price | money }}</td>
-</tr>`;
-          break;
-        case 'customer-info':
-          snippet = `<div class="customer-info">
-    <h2>Customer Information</h2>
-    <p>
-        <strong>Name:</strong> {{ order.customer.name }}<br>
-        <strong>Email:</strong> {{ order.customer.email }}<br>
-        <strong>Phone:</strong> {{ order.customer.phone }}
-    </p>
-</div>`;
-          break;
-        case 'shipping-info':
-          snippet = `<div class="shipping-info">
-    <h2>Shipping Information</h2>
-    <p>
-        {{ order.shipping_address.name }}<br>
-        {{ order.shipping_address.address1 }}<br>
-        {% if order.shipping_address.address2 != "" %}
-            {{ order.shipping_address.address2 }}<br>
-        {% endif %}
-        {{ order.shipping_address.city }}, {{ order.shipping_address.province_code }} {{ order.shipping_address.zip }}<br>
-        {{ order.shipping_address.country }}
-    </p>
-    <p><strong>Shipping Method:</strong> {{ order.shipping_lines[0].title }}</p>
-</div>`;
-          break;
-        case 'footer':
-          snippet = `<div class="footer">
-    <p>If you have any questions, reply to this email or contact us at {{ shop.email }}</p>
-    <p>&copy; {{ 'now' | date: "%Y" }} {{ shop.name }}. All rights reserved.</p>
-</div>`;
-          break;
-      }
-
-      // Insert at cursor position
-      editor.insert(snippet);
-      $('#template-elements-modal').addClass('hidden');
-    });
-
-    // Update preview function
-    function updatePreview() {
-      const previewFrame = document.getElementById('preview-frame');
-      const previewDocument = previewFrame.contentDocument || previewFrame.contentWindow.document;
-      previewDocument.open();
-
-      // Replace Liquid tags with sample data for preview
-      let html = editor.getValue()
-        .replace(/{{ shop.name }}/g, 'Your Shopify Store')
-        .replace(/{{ shop.email_logo_url }}/g, 'https://via.placeholder.com/150x50')
-        .replace(/{{ customer.first_name }}/g, 'John')
-        .replace(/{{ order.name }}/g, '#1001')
-        .replace(/{{ order.created_at \| date: "%B %d, %Y" }}/g, 'March 27, 2025')
-        .replace(/{{ order.transactions\[0\].gateway }}/g, 'Credit Card')
-        .replace(/{{ line_item.title }}/g, 'Sample Product')
-        .replace(/{{ line_item.variant.title }}/g, 'Blue / Medium')
-        .replace(/{{ line_item.quantity }}/g, '1')
-        .replace(/{{ line_item.price \| money }}/g, '$29.99')
-        .replace(/{{ order.subtotal_price \| money }}/g, '$29.99')
-        .replace(/{{ order.shipping_price \| money }}/g, '$5.00')
-        .replace(/{{ order.tax_price \| money }}/g, '$3.50')
-        .replace(/{{ order.total_price \| money }}/g, '$38.49')
-        .replace(/{{ order.shipping_address.name }}/g, 'John Doe')
-        .replace(/{{ order.shipping_address.address1 }}/g, '123 Main Street')
-        .replace(/{{ order.shipping_address.address2 }}/g, 'Apt 4B')
-        .replace(/{{ order.shipping_address.city }}/g, 'New York')
-        .replace(/{{ order.shipping_address.province_code }}/g, 'NY')
-        .replace(/{{ order.shipping_address.zip }}/g, '10001')
-        .replace(/{{ order.shipping_address.country }}/g, 'United States')
-        .replace(/{{ order.shipping_lines\[0\].title }}/g, 'Standard Shipping')
-        .replace(/{{ shop.email }}/g, 'support@yourstore.com')
-        .replace(/{{ 'now' \| date: "%Y" }}/g, '2025');
-
-      // Handle Liquid for loops
-      html = html.replace(/{% for line_item in order.line_items %}([\s\S]*?){% endfor %}/g, (match, content) => {
-        // Just repeat the content 3 times for preview
-        return content + content + content;
-      });
-
-      // Handle Liquid if statements
-      html = html.replace(/{% if (.*?) %}([\s\S]*?){% endif %}/g, (match, condition, content) => {
-        // For preview, just include the content
-        return content;
-      });
-
-      previewDocument.write(html);
-      previewDocument.close();
-    }
-
-    // Responsive view buttons
-    $('#mobile-view').on('click', function () {
-      $(this).addClass('bg-gray-200');
-      $('#desktop-view').removeClass('bg-gray-200');
-      $('#preview-frame').css('width', '375px');
-    });
-
-    $('#desktop-view').on('click', function () {
-      $(this).addClass('bg-gray-200');
-      $('#mobile-view').removeClass('bg-gray-200');
-      $('#preview-frame').css('width', '100%');
-    });
-
-    // Template elements dropdown
-    $('#template-elements').on('change', function () {
-      const value = $(this).val();
-      if (!value) return;
-
-      let snippet = '';
-
-      switch (value) {
-        case 'header':
-          snippet = `<div class="header">
-    <img src="{{ shop.email_logo_url }}" alt="{{ shop.name }}" class="logo">
-    <h1>Your Order is Confirmed!</h1>
-    <p>Hey {{ customer.first_name }}, thank you for your purchase.</p>
-</div>`;
-          break;
-        case 'order-details':
-          snippet = `<div class="order-details">
-    <h2>Order Summary</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Product</th>
-                <th>Quantity</th>
-                <th>Price</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for line_item in order.line_items %}
-            <tr>
-                <td>
-                    {{ line_item.title }}
-                    {% if line_item.variant.title != 'Default Title' %}
-                        <br><small>{{ line_item.variant.title }}</small>
-                    {% endif %}
-                </td>
-                <td>{{ line_item.quantity }}</td>
-                <td>{{ line_item.price | money }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="2"><strong>Subtotal</strong></td>
-                <td>{{ order.subtotal_price | money }}</td>
-            </tr>
-            <tr>
-                <td colspan="2"><strong>Shipping</strong></td>
-                <td>{{ order.shipping_price | money }}</td>
-            </tr>
-            {% if order.tax_price > 0 %}
-            <tr>
-                <td colspan="2"><strong>Tax</strong></td>
-                <td>{{ order.tax_price | money }}</td>
-            </tr>
-            {% endif %}
-            <tr>
-                <td colspan="2"><strong>Total</strong></td>
-                <td>{{ order.total_price | money }}</td>
-            </tr>
-        </tfoot>
-    </table>
-</div>`;
-          break;
-        case 'product-row':
-          snippet = `<tr>
-    <td>
-        {{ line_item.title }}
-        {% if line_item.variant.title != 'Default Title' %}
-            <br><small>{{ line_item.variant.title }}</small>
-        {% endif %}
-    </td>
-    <td>{{ line_item.quantity }}</td>
-    <td>{{ line_item.price | money }}</td>
-</tr>`;
-          break;
-        case 'customer-info':
-          snippet = `<div class="customer-info">
-    <h2>Customer Information</h2>
-    <p>
-        <strong>Name:</strong> {{ order.customer.name }}<br>
-        <strong>Email:</strong> {{ order.customer.email }}<br>
-        <strong>Phone:</strong> {{ order.customer.phone }}
-    </p>
-</div>`;
-          break;
-        case 'shipping-info':
-          snippet = `<div class="shipping-info">
-    <h2>Shipping Information</h2>
-    <p>
-        {{ order.shipping_address.name }}<br>
-        {{ order.shipping_address.address1 }}<br>
-        {% if order.shipping_address.address2 != "" %}
-            {{ order.shipping_address.address2 }}<br>
-        {% endif %}
-        {{ order.shipping_address.city }}, {{ order.shipping_address.province_code }} {{ order.shipping_address.zip }}<br>
-        {{ order.shipping_address.country }}
-    </p>
-    <p><strong>Shipping Method:</strong> {{ order.shipping_lines[0].title }}</p>
-</div>`;
-          break;
-        case 'footer':
-          snippet = `<div class="footer">
-    <p>If you have any questions, reply to this email or contact us at {{ shop.email }}</p>
-    <p>&copy; {{ 'now' | date: "%Y" }} {{ shop.name }}. All rights reserved.</p>
-</div>`;
-          break;
-      }
-
-      // Insert at cursor position
-      editor.insert(snippet);
-
-      // Reset dropdown
-      $(this).val('');
-    });
-
-    // Panel resizing functionality
-    const leftPanel = document.getElementById('left-panel');
-    const rightPanel = document.getElementById('right-panel');
-    const resizer = document.getElementById('resizer');
-    let isResizing = false;
-
-    resizer.addEventListener('mousedown', (e) => {
-      isResizing = true;
-      document.body.style.cursor = 'col-resize';
-    });
-
-    document.addEventListener('mousemove', (e) => {
-      if (!isResizing) return;
-
-      const containerWidth = leftPanel.parentElement.clientWidth;
-      const newLeftPanelWidth = (e.clientX / containerWidth) * 100;
-
-      leftPanel.style.width = `${newLeftPanelWidth}%`;
-      rightPanel.style.width = `${100 - newLeftPanelWidth}%`;
-
-      editor.resize();
-    });
-
-    document.addEventListener('mouseup', () => {
-      isResizing = false;
-      document.body.style.cursor = 'default';
-    });
-  </script>
+  <!-- Scripts -->
+  <script src="js/templates.js"></script>
+  <script src="js/liquid-variables.js"></script>
+  <script src="js/liquid-blocks.js"></script>
+  <script src="js/editor.js"></script>
+  <script src="js/preview.js"></script>
+  <script src="js/modals.js"></script>
+  <script src="js/main.js"></script>
 </body>
 
 </html>
