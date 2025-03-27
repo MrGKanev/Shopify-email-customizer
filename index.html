@@ -4,13 +4,48 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shopify Email Customizer</title>
+
+  <!-- SEO Meta Tags -->
+  <title>Shopify Email Customizer | Create Beautiful Email Templates</title>
+  <meta name="description"
+    content="Easily customize and create professional Shopify email templates with our visual editor. Real-time preview and Liquid support.">
+  <meta name="keywords" content="shopify, email templates, email customizer, liquid templates, order confirmation">
+  <meta name="author" content="Gabriel Kanev">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Shopify Email Customizer | Visual Email Template Editor">
+  <meta property="og:description"
+    content="Create professional Shopify notification emails with our easy-to-use visual editor.">
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:title" content="Shopify Email Customizer | Visual Email Template Editor">
+  <meta property="twitter:description"
+    content="Create professional Shopify notification emails with our easy-to-use visual editor.">
+  <!-- Scripts and Stylesheets -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/mode-html.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/theme-monokai.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
   <link href="css/style.css" rel="stylesheet">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Shopify Email Customizer",
+    "applicationCategory": "WebApplication",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "description": "A browser-based visual editor for creating and customizing Shopify email templates with real-time preview."
+  }
+  </script>
 </head>
 
 <body class="bg-gray-100 min-h-screen">
@@ -33,14 +68,16 @@
       <div id="left-panel" class="md:w-1/2 p-2 border-r border-gray-200">
         <h2 class="text-lg font-semibold mb-2">Email Preview</h2>
         <div class="mb-2 flex items-center space-x-2">
-          <button id="mobile-view" class="p-1 rounded border border-gray-300 hover:bg-gray-100">
+          <button id="mobile-view" class="p-1 rounded border border-gray-300 hover:bg-gray-100"
+            aria-label="Mobile view">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
               stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
             </svg>
           </button>
-          <button id="desktop-view" class="p-1 rounded border border-gray-300 hover:bg-gray-100 bg-gray-200">
+          <button id="desktop-view" class="p-1 rounded border border-gray-300 hover:bg-gray-100 bg-gray-200"
+            aria-label="Desktop view">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
               stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -49,7 +86,7 @@
           </button>
         </div>
         <div id="preview-container" class="w-full overflow-auto">
-          <iframe id="preview-frame" class="w-full"></iframe>
+          <iframe id="preview-frame" class="w-full" title="Email preview"></iframe>
         </div>
       </div>
 
@@ -62,18 +99,19 @@
             Insert Template Element
           </button>
         </div>
-        <div id="editor"></div>
+        <div id="editor" role="textbox" aria-label="HTML Email template editor"></div>
       </div>
     </div>
   </div>
 
   <!-- Modals -->
   <div id="template-elements-modal"
-    class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50">
+    class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50"
+    role="dialog" aria-labelledby="template-elements-title" aria-modal="true">
     <div class="relative mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
       <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-medium">Template Elements</h3>
-        <button class="close-modal text-gray-400 hover:text-gray-500">
+        <h3 id="template-elements-title" class="text-lg font-medium">Template Elements</h3>
+        <button class="close-modal text-gray-400 hover:text-gray-500" aria-label="Close modal">
           <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
           </svg>
@@ -86,11 +124,12 @@
   </div>
 
   <div id="liquid-blocks-modal"
-    class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50">
+    class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50"
+    role="dialog" aria-labelledby="liquid-blocks-title" aria-modal="true">
     <div class="relative mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
       <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-medium">Custom Liquid Blocks</h3>
-        <button class="close-modal text-gray-400 hover:text-gray-500">
+        <h3 id="liquid-blocks-title" class="text-lg font-medium">Custom Liquid Blocks</h3>
+        <button class="close-modal text-gray-400 hover:text-gray-500" aria-label="Close modal">
           <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
           </svg>
@@ -103,11 +142,12 @@
   </div>
 
   <div id="liquid-vars-modal"
-    class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50">
+    class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50"
+    role="dialog" aria-labelledby="liquid-vars-title" aria-modal="true">
     <div class="relative mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
       <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-medium">Liquid Variables for Email Templates</h3>
-        <button class="close-modal text-gray-400 hover:text-gray-500">
+        <h3 id="liquid-vars-title" class="text-lg font-medium">Liquid Variables for Email Templates</h3>
+        <button class="close-modal text-gray-400 hover:text-gray-500" aria-label="Close modal">
           <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
           </svg>
@@ -119,7 +159,8 @@
     </div>
   </div>
 
-  <div class="toast hidden fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded shadow-lg" id="toast">
+  <div class="toast hidden fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded shadow-lg" id="toast" role="alert"
+    aria-live="assertive">
     Template saved successfully!
   </div>
 
