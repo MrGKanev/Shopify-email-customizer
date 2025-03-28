@@ -17,6 +17,52 @@
   width: 4px;
 }
 
+/* WYSIWYG Editor styles */
+#wysiwyg-editor {
+  height: calc(100vh - 8rem);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+#quill-editor {
+  height: calc(100vh - 12rem);
+  overflow-y: auto;
+  border: 1px solid #e2e8f0;
+  border-top: none;
+  background-color: white;
+}
+
+.ql-toolbar.ql-snow {
+  border-color: #e2e8f0 !important;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
+}
+
+.ql-container.ql-snow {
+  border-color: #e2e8f0 !important;
+  border-bottom-left-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
+}
+
+/* Liquid tag styling */
+.ql-liquid {
+  display: inline-block;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: monospace;
+  user-select: all;
+}
+
+.ql-liquid[data-liquid-type="variable"] {
+  background-color: #e0f7fa;
+  color: #0277bd;
+}
+
+.ql-liquid[data-liquid-type="control"] {
+  background-color: #fff9c4;
+  color: #827717;
+}
 /* Modal styles */
 .liquid-block-item,
 .liquid-var-item,
