@@ -60,26 +60,6 @@ function initModals() {
         saveBtn.addEventListener('click', function() {
             const toast = document.getElementById('toast');
             toast.classList.remove('hidden');
-            
-            setTimeout(() => {
-                toast.classList.add('hidden');
-            }, 3000);
-        });
-    }
-    
-    // Preview button click handler
-    const previewBtn = document.getElementById('preview-btn');
-    if (previewBtn) {
-        previewBtn.addEventListener('click', function() {
-            updatePreview();
-        });
-    }
-    // Save button handler
-    const saveBtn = document.getElementById('save-btn');
-    if (saveBtn) {
-        saveBtn.addEventListener('click', function() {
-            const toast = document.getElementById('toast');
-            toast.classList.remove('hidden');
             toast.textContent = 'Template saved successfully!';
             toast.classList.add('bg-green-500');
             
@@ -94,6 +74,14 @@ function initModals() {
     if (minifyBtn) {
         minifyBtn.addEventListener('click', function() {
             copyMinifiedHTML();
+        });
+    }
+    
+    // Preview button click handler
+    const previewBtn = document.getElementById('preview-btn');
+    if (previewBtn) {
+        previewBtn.addEventListener('click', function() {
+            updatePreview();
         });
     }
 }

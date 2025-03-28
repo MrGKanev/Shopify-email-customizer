@@ -52,15 +52,15 @@
   <header class="bg-blue-600 text-white p-2">
     <div class="w-full flex justify-between items-center">
       <h1 class="text-2xl font-bold">Shopify Email Customizer</h1>
-<div class="space-x-2">
-  <button id="save-btn" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded">Save Template</button>
-  <button id="minify-btn" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded">Minify & Copy</button>
-  <button id="liquid-blocks-btn" class="bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded">Custom
-    Liquid</button>
-  <button id="liquid-vars-btn" class="bg-indigo-500 hover:bg-indigo-600 px-4 py-2 rounded">Liquid
-    Variables</button>
-  <button id="preview-btn" class="bg-purple-500 hover:bg-purple-600 px-4 py-2 rounded">Update Preview</button>
-</div>
+      <div class="space-x-2">
+        <button id="save-btn" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded">Save Template</button>
+        <button id="minify-btn" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded">Minify & Copy</button>
+        <button id="liquid-blocks-btn" class="bg-yellow-500 hover:bg-yellow-600 px-4 py-2 rounded">Custom
+          Liquid</button>
+        <button id="liquid-vars-btn" class="bg-indigo-500 hover:bg-indigo-600 px-4 py-2 rounded">Liquid
+          Variables</button>
+        <button id="preview-btn" class="bg-purple-500 hover:bg-purple-600 px-4 py-2 rounded">Update Preview</button>
+      </div>
     </div>
   </header>
 
@@ -160,19 +160,41 @@
     </div>
   </div>
 
-  <div class="toast hidden fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded shadow-lg" id="toast" role="alert"
+  <div class="toast hidden fixed bottom-4 right-4 text-white p-4 rounded shadow-lg" id="toast" role="alert"
     aria-live="assertive">
     Template saved successfully!
   </div>
 
-  <!-- Scripts -->
-  <script src="js/templates.js"></script>
-  <script src="js/liquid-variables.js"></script>
-  <script src="js/liquid-blocks.js"></script>
-  <script src="js/editor.js"></script>
-  <script src="js/preview.js"></script>
-  <script src="js/modals.js"></script>
-  <script src="js/main.js"></script>
+<!-- Scripts -->
+<script src="js/templates.js"></script>
+<script src="js/liquid-variables.js"></script>
+<script src="js/liquid-blocks.js"></script>
+<script src="js/editor.js"></script>
+<script src="js/preview.js"></script>
+<script src="js/minify.js"></script>
+<script src="js/modals.js"></script>
+<script>
+  /**
+   * Main application initialization
+   */
+
+  // Initialize the application when the DOM is loaded
+  document.addEventListener('DOMContentLoaded', function () {
+    // Initialize template data
+    initTemplateElements();
+    initLiquidVariables();
+    initLiquidBlocks();
+
+    // Initialize UI components
+    initModals();
+    initResizer();
+    initViewButtons();
+
+    // Initial preview update
+    updatePreview();
+  });
+</script>
+
 </body>
 
 </html>
