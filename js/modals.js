@@ -60,10 +60,20 @@ function initModals() {
         saveBtn.addEventListener('click', function() {
             const toast = document.getElementById('toast');
             toast.classList.remove('hidden');
+            toast.textContent = 'Template saved successfully!';
+            toast.classList.add('bg-green-500');
             
             setTimeout(() => {
                 toast.classList.add('hidden');
             }, 3000);
+        });
+    }
+    
+    // Minify button handler
+    const minifyBtn = document.getElementById('minify-btn');
+    if (minifyBtn) {
+        minifyBtn.addEventListener('click', function() {
+            copyMinifiedHTML();
         });
     }
     
