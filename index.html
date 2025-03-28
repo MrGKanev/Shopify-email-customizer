@@ -94,7 +94,7 @@
       <div class="resizer" id="resizer"></div>
 
       <div id="right-panel" class="md:w-1/2 p-2">
-        <h2 class="text-lg font-semibold mb-2">Email Code</h2>
+        <h2 class="text-lg font-semibold mb-2">Email Editor</h2>
         <div class="mb-2">
           <button id="template-elements-btn" class="w-full p-2 border rounded bg-gray-50 hover:bg-gray-100 text-left">
             Insert Template Element
@@ -165,35 +165,39 @@
     Template saved successfully!
   </div>
 
-<!-- Scripts -->
-<script src="js/templates.js"></script>
-<script src="js/liquid-variables.js"></script>
-<script src="js/liquid-blocks.js"></script>
-<script src="js/editor.js"></script>
-<script src="js/preview.js"></script>
-<script src="js/minify.js"></script>
-<script src="js/modals.js"></script>
-<script>
-  /**
-   * Main application initialization
-   */
+  <!-- Scripts -->
+  <script src="js/templates.js"></script>
+  <script src="js/liquid-variables.js"></script>
+  <script src="js/liquid-blocks.js"></script>
+  <script src="js/editor.js"></script>
+  <script src="js/preview.js"></script>
+  <script src="js/minify.js"></script>
+  <script src="js/modals.js"></script>
+  <script src="js/wysiwyg-editor.js"></script>
+  <script src="js/template-integration.js"></script>
+  <script src="js/email-components.js"></script>
+  <script src="js/editor-integration.js"></script>
+  <script>
+    /**
+     * Main application initialization
+     */
 
-  // Initialize the application when the DOM is loaded
-  document.addEventListener('DOMContentLoaded', function () {
-    // Initialize template data
-    initTemplateElements();
-    initLiquidVariables();
-    initLiquidBlocks();
+    // Initialize the application when the DOM is loaded
+    document.addEventListener('DOMContentLoaded', function () {
+      // Initialize template data
+      initTemplateElements();
+      initLiquidVariables();
+      initLiquidBlocks();
 
-    // Initialize UI components
-    initModals();
-    initResizer();
-    initViewButtons();
+      // Initialize UI components
+      initModals();
+      initResizer();
+      initViewButtons();
 
-    // Initial preview update
-    updatePreview();
-  });
-</script>
+      // Initial preview update
+      updatePreview();
+    });
+  </script>
 
 </body>
 

@@ -1,13 +1,20 @@
 /**
- * Editor initialization and functionality
+ * Editor.js Patch for WYSIWYG Integration
+ * 
+ * This patch modifies the original editor.js file to prevent infinite recursion
+ * between the code editor and WYSIWYG editor. This should be merged with the
+ * existing editor.js file.
  */
 
-// Initialize Ace Editor
+// Initialize Ace Editor - keeping original code
 const editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai");
 editor.session.setMode("ace/mode/html");
 
-// Default template HTML
+// Global flag to prevent update loops
+let isUpdatingEditor = false;
+
+// Default template HTML - keeping original code
 const defaultTemplate = `<!DOCTYPE html>
 <html>
 <head>
@@ -153,16 +160,19 @@ const defaultTemplate = `<!DOCTYPE html>
 </body>
 </html>`;
 
-// Set default template
+// Set default template - keeping original code
 editor.setValue(defaultTemplate);
 editor.clearSelection();
 
-// Auto update preview when editor changes
+// Modified: Auto update preview when editor changes with loop prevention
 editor.session.on('change', function() {
-    updatePreview();
+    // Only update if not being modified by WYSIWYG editor
+    if (!window.isUpdatingFromWysiwyg) {
+        updatePreview();
+    }
 });
 
-// Panel resizing functionality
+// Panel resizing functionality - keeping original code
 const initResizer = () => {
     const leftPanel = document.getElementById('left-panel');
     const rightPanel = document.getElementById('right-panel');
