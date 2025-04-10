@@ -164,12 +164,8 @@ const defaultTemplate = `<!DOCTYPE html>
 editor.setValue(defaultTemplate);
 editor.clearSelection();
 
-// Modified: Auto update preview when editor changes with loop prevention
 editor.session.on('change', function() {
-    // Only update if not being modified by WYSIWYG editor
-    if (!window.isUpdatingFromWysiwyg) {
-        updatePreview();
-    }
+  updatePreview();
 });
 
 // Panel resizing functionality - keeping original code
