@@ -22,11 +22,13 @@
   <meta property="twitter:title" content="Shopify Email Customizer | Visual Email Template Editor">
   <meta property="twitter:description"
     content="Create professional Shopify notification emails with our easy-to-use visual editor.">
+
   <!-- Scripts and Stylesheets -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/mode-html.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/theme-monokai.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ext-language_tools.js"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
   <link href="css/style.css" rel="stylesheet">
 
@@ -51,7 +53,11 @@
 <body class="bg-gray-100 min-h-screen">
   <header class="bg-blue-600 text-white p-2">
     <div class="w-full flex justify-between items-center">
-      <h1 class="text-2xl font-bold">Shopify Email Customizer</h1>
+      <div class="flex items-center">
+        <h1 class="text-2xl font-bold">Shopify Email Customizer</h1>
+        <a href="https://gkanev.com" class="ml-2 text-xs text-blue-200 hover:text-white" target="_blank"
+          rel="noopener noreferrer">by Gabriel Kanev</a>
+      </div>
       <div class="space-x-2">
         <button id="save-btn" class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded">Save Template</button>
         <button id="minify-btn" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded">Minify & Copy</button>
@@ -66,25 +72,28 @@
 
   <div class="w-full px-2">
     <div class="flex flex-col md:flex-row bg-white rounded-lg shadow-lg">
+      <!-- Left Panel -->
       <div id="left-panel" class="md:w-1/2 p-2 border-r border-gray-200">
-        <h2 class="text-lg font-semibold mb-2">Email Preview</h2>
-        <div class="mb-2 flex items-center space-x-2">
-          <button id="mobile-view" class="p-1 rounded border border-gray-300 hover:bg-gray-100"
-            aria-label="Mobile view">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-            </svg>
-          </button>
-          <button id="desktop-view" class="p-1 rounded border border-gray-300 hover:bg-gray-100 bg-gray-200"
-            aria-label="Desktop view">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-          </button>
+        <div class="flex justify-between items-center mb-2">
+          <h2 class="text-lg font-semibold">Email Preview</h2>
+          <div class="flex items-center space-x-2">
+            <button id="mobile-view" class="p-1 rounded border border-gray-300 hover:bg-gray-100"
+              aria-label="Mobile view">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              </svg>
+            </button>
+            <button id="desktop-view" class="p-1 rounded border border-gray-300 hover:bg-gray-100 bg-gray-200"
+              aria-label="Desktop view">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </button>
+          </div>
         </div>
         <div id="preview-container" class="w-full overflow-auto">
           <iframe id="preview-frame" class="w-full" title="Email preview"></iframe>
@@ -93,10 +102,11 @@
 
       <div class="resizer" id="resizer"></div>
 
+      <!-- Right Panel -->
       <div id="right-panel" class="md:w-1/2 p-2">
-        <h2 class="text-lg font-semibold mb-2">Email Code</h2>
-        <div class="mb-2">
-          <button id="template-elements-btn" class="w-full p-2 border rounded bg-gray-50 hover:bg-gray-100 text-left">
+        <div class="flex justify-between items-center mb-2">
+          <h2 class="text-lg font-semibold">Email Editor</h2>
+          <button id="template-elements-btn" class="px-3 py-1 border rounded bg-gray-50 hover:bg-gray-100">
             Insert Template Element
           </button>
         </div>
@@ -118,7 +128,7 @@
           </svg>
         </button>
       </div>
-      <div id="template-elements-container" class="grid grid-cols-1 gap-4 max-h-96 overflow-y-auto">
+      <div id="template-elements-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-96 overflow-y-auto">
         <!-- Template elements will be inserted here via JavaScript -->
       </div>
     </div>
@@ -154,8 +164,57 @@
           </svg>
         </button>
       </div>
-      <div id="liquid-vars-container" class="grid grid-cols-1 gap-4 max-h-96 overflow-y-auto">
+      <div id="liquid-vars-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-96 overflow-y-auto">
         <!-- Liquid variables will be inserted here via JavaScript -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Help Modal -->
+  <div id="editor-help-modal"
+    class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50"
+    role="dialog" aria-labelledby="editor-help-title" aria-modal="true">
+    <div class="relative mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+      <div class="flex justify-between items-center mb-4">
+        <h3 id="editor-help-title" class="text-lg font-medium">Editor Help</h3>
+        <button class="close-modal text-gray-400 hover:text-gray-500" aria-label="Close modal">
+          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <h4 class="font-bold">Editor Shortcuts</h4>
+          <p>Use keyboard shortcuts for quick formatting:</p>
+          <ul class="list-disc pl-5 mt-2">
+            <li><strong>Ctrl+B</strong> - Bold text</li>
+            <li><strong>Ctrl+I</strong> - Italic text</li>
+            <li><strong>Ctrl+K</strong> - Insert link</li>
+            <li><strong>Ctrl+1</strong> - Heading 1</li>
+            <li><strong>Ctrl+2</strong> - Heading 2</li>
+            <li><strong>Ctrl+P</strong> - Paragraph</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-bold">Working with Liquid Tags</h4>
+          <p>Use the "Liquid Variables" and "Custom Liquid" buttons to insert Shopify Liquid code.</p>
+        </div>
+        <div>
+          <h4 class="font-bold">Email Components</h4>
+          <p>Use the toolbar buttons above the editor to insert common email elements like buttons, tables, and
+            dividers.</p>
+        </div>
+        <div>
+          <h4 class="font-bold">Template Elements</h4>
+          <p>Click "Insert Template Element" to add Shopify-specific email components like order details and shipping
+            information.</p>
+        </div>
+        <div>
+          <h4 class="font-bold">Preview</h4>
+          <p>Use the "Update Preview" button to see how your email will look. Toggle between desktop and mobile views.
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -165,36 +224,127 @@
     Template saved successfully!
   </div>
 
-<!-- Scripts -->
-<script src="js/templates.js"></script>
-<script src="js/liquid-variables.js"></script>
-<script src="js/liquid-blocks.js"></script>
-<script src="js/editor.js"></script>
-<script src="js/preview.js"></script>
-<script src="js/minify.js"></script>
-<script src="js/modals.js"></script>
-<script>
-  /**
-   * Main application initialization
-   */
+  <!-- Scripts -->
+  <script src="js/templates.js"></script>
+  <script src="js/liquid-variables.js"></script>
+  <script src="js/liquid-blocks.js"></script>
+  <script src="js/editor.js"></script>
+  <script src="js/preview.js"></script>
+  <script src="js/minify.js"></script>
+  <script src="js/modals.js"></script>
+  <script src="js/enhanced-editor.js"></script>
+  <script>
+    /**
+     * Main application initialization
+     */
 
-  // Initialize the application when the DOM is loaded
-  document.addEventListener('DOMContentLoaded', function () {
-    // Initialize template data
-    initTemplateElements();
-    initLiquidVariables();
-    initLiquidBlocks();
+    // Initialize the application when the DOM is loaded
+    document.addEventListener('DOMContentLoaded', function () {
+      // Initialize template data
+      initTemplateElements();
+      initLiquidVariables();
+      initLiquidBlocks();
 
-    // Initialize UI components
-    initModals();
-    initResizer();
-    initViewButtons();
+      // Initialize UI components
+      initModals();
+      initResizer();
+      initViewButtons();
 
-    // Initial preview update
-    updatePreview();
-  });
-</script>
+      // Add keyboard shortcuts and auto-completion to editor
+      enhanceAceEditor();
 
+      // Initial preview update
+      updatePreview();
+    });
+
+    /**
+     * Enhanced Ace editor initialization
+     */
+    function enhanceAceEditor() {
+      // Enable autocomplete, snippets, and other features
+      const aceEditor = ace.edit("editor");
+
+      // Enable autocompletion
+      aceEditor.setOptions({
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: true,
+        showPrintMargin: false,
+        fontSize: 14
+      });
+
+      // Add HTML tag autocompletion
+      const htmlCompleter = {
+        getCompletions: function (editor, session, pos, prefix, callback) {
+          const completions = [
+            { value: 'div', meta: 'tag' },
+            { value: 'span', meta: 'tag' },
+            { value: 'table', meta: 'tag' },
+            { value: 'tr', meta: 'tag' },
+            { value: 'td', meta: 'tag' },
+            { value: 'th', meta: 'tag' },
+            { value: 'p', meta: 'tag' },
+            { value: 'strong', meta: 'tag' },
+            { value: 'em', meta: 'tag' },
+            { value: 'a', meta: 'tag' },
+            { value: 'img', meta: 'tag' },
+            { value: 'h1', meta: 'tag' },
+            { value: 'h2', meta: 'tag' },
+            { value: 'h3', meta: 'tag' },
+            { value: 'style', meta: 'attribute', snippet: 'style="${1:property}: ${2:value};"' },
+            { value: 'class', meta: 'attribute', snippet: 'class="${1:className}"' },
+            { value: 'id', meta: 'attribute', snippet: 'id="${1:elementId}"' },
+            { value: 'href', meta: 'attribute', snippet: 'href="${1:url}"' },
+            { value: 'src', meta: 'attribute', snippet: 'src="${1:url}"' }
+          ];
+
+          callback(null, completions.map(function (completion) {
+            return {
+              caption: completion.value,
+              value: completion.snippet || completion.value,
+              meta: completion.meta,
+              score: 1000
+            };
+          }));
+        }
+      };
+
+      // Add liquid tag autocompletion
+      const liquidCompleter = {
+        getCompletions: function (editor, session, pos, prefix, callback) {
+          const completions = [
+            { value: 'shop.name', meta: 'liquid', snippet: '{{ shop.name }}' },
+            { value: 'customer.first_name', meta: 'liquid', snippet: '{{ customer.first_name }}' },
+            { value: 'order.name', meta: 'liquid', snippet: '{{ order.name }}' },
+            { value: 'for', meta: 'liquid', snippet: '{% for ${1:item} in ${2:collection} %}\n\t${3}\n{% endfor %}' },
+            { value: 'if', meta: 'liquid', snippet: '{% if ${1:condition} %}\n\t${2}\n{% endif %}' },
+            { value: 'else', meta: 'liquid', snippet: '{% else %}\n\t${1}\n' },
+            { value: 'elsif', meta: 'liquid', snippet: '{% elsif ${1:condition} %}\n\t${2}\n' }
+          ];
+
+          callback(null, completions.map(function (completion) {
+            return {
+              caption: completion.value,
+              value: completion.snippet || completion.value,
+              meta: completion.meta,
+              score: 1000
+            };
+          }));
+        }
+      };
+
+      // Add completers
+      if (ace.require) {
+        try {
+          const langTools = ace.require("ace/ext/language_tools");
+          langTools.addCompleter(htmlCompleter);
+          langTools.addCompleter(liquidCompleter);
+        } catch (e) {
+          console.error("Could not load language tools:", e);
+        }
+      }
+    }
+  </script>
 </body>
 
 </html>

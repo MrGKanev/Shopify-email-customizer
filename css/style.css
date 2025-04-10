@@ -1,11 +1,15 @@
 /* Main layout styles */
 #editor {
-  height: calc(100vh - 8rem);
+  height: calc(100vh - 9rem);
+  max-height: 90vh;
   width: 100%;
+  resize: vertical;
+  overflow: auto;
 }
 
 #preview-frame {
-  height: calc(100vh - 8rem);
+  height: calc(100vh - 9rem);
+  max-height: 90vh;
   width: 100%;
   border: 1px solid #e2e8f0;
   background-color: white;
@@ -15,6 +19,147 @@
   background-color: #cbd5e0;
   cursor: col-resize;
   width: 4px;
+}
+
+/* Make the main container responsive */
+.w-full.px-2 {
+  max-width: 100%;
+  overflow-x: hidden;
+  padding-bottom: 1rem;
+}
+
+/* Make panels responsive */
+#left-panel,
+#right-panel {
+  min-width: 300px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Panel header areas */
+#left-panel .flex.justify-between.items-center,
+#right-panel .flex.justify-between.items-center {
+  flex-shrink: 0;
+}
+
+/* Panel content areas */
+#preview-container,
+#editor {
+  flex-grow: 1;
+  overflow: auto;
+}
+
+/* Ensure the preview container takes remaining height */
+#preview-container {
+  height: 100%;
+}
+
+/* Main flex container */
+.flex.flex-col.md\:flex-row {
+  max-height: calc(100vh - 5rem);
+  height: calc(100vh - 5rem);
+  overflow: hidden;
+}
+
+/* Code Toolbar styles */
+#code-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 6px;
+  background-color: #f7fafc;
+  border: 1px solid #e2e8f0;
+  border-bottom: none;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+
+#code-toolbar button {
+  min-width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e2e8f0;
+  background-color: white;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+#code-toolbar button:hover {
+  background-color: #f0f4f8;
+  border-color: #cbd5e0;
+}
+
+#code-toolbar button:active {
+  background-color: #e2e8f0;
+}
+
+#code-toolbar .separator {
+  width: 1px;
+  height: 24px;
+  background-color: #e2e8f0;
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+
+/* Compact template elements button */
+#template-elements-btn {
+  white-space: nowrap;
+  font-size: 0.875rem;
+}
+
+/* Mobile/Desktop View buttons */
+#mobile-view,
+#desktop-view {
+  flex-shrink: 0;
+}
+
+/* Toolbar button groups */
+.btn-group {
+  display: flex;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.btn-group button {
+  border-radius: 0 !important;
+  border-right: none;
+}
+
+.btn-group button:first-child {
+  border-top-left-radius: 4px !important;
+  border-bottom-left-radius: 4px !important;
+}
+
+.btn-group button:last-child {
+  border-top-right-radius: 4px !important;
+  border-bottom-right-radius: 4px !important;
+  border-right: 1px solid #e2e8f0;
+}
+
+/* Template/Component buttons */
+.component-btn {
+  display: flex;
+  align-items: center;
+  padding: 6px 10px !important;
+}
+
+.component-btn svg {
+  margin-right: 6px;
+  width: 16px;
+  height: 16px;
+}
+
+/* Enhanced code editor */
+.ace_editor {
+  border: 1px solid #e2e8f0;
+  border-radius: 0 0 0.25rem 0.25rem;
 }
 
 /* Modal styles */
@@ -46,4 +191,24 @@ code {
 
 pre {
   white-space: pre-wrap;
+}
+
+/* Media queries for better responsive behavior */
+@media (max-width: 768px) {
+
+  #left-panel,
+  #right-panel {
+    width: 100% !important;
+    height: auto;
+  }
+
+  .flex.flex-col.md\:flex-row {
+    height: auto;
+    max-height: none;
+  }
+
+  #editor,
+  #preview-frame {
+    height: 70vh;
+  }
 }

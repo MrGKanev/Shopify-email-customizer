@@ -1,5 +1,5 @@
 /**
- * Editor initialization and functionality
+ * Code Editor initialization and functionality
  */
 
 // Initialize Ace Editor
