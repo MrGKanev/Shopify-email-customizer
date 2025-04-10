@@ -68,25 +68,28 @@
 
   <div class="w-full px-2">
     <div class="flex flex-col md:flex-row bg-white rounded-lg shadow-lg">
+      <!-- Left Panel -->
       <div id="left-panel" class="md:w-1/2 p-2 border-r border-gray-200">
-        <h2 class="text-lg font-semibold mb-2">Email Preview</h2>
-        <div class="mb-2 flex items-center space-x-2">
-          <button id="mobile-view" class="p-1 rounded border border-gray-300 hover:bg-gray-100"
-            aria-label="Mobile view">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-            </svg>
-          </button>
-          <button id="desktop-view" class="p-1 rounded border border-gray-300 hover:bg-gray-100 bg-gray-200"
-            aria-label="Desktop view">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-              stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-          </button>
+        <div class="flex justify-between items-center mb-2">
+          <h2 class="text-lg font-semibold">Email Preview</h2>
+          <div class="flex items-center space-x-2">
+            <button id="mobile-view" class="p-1 rounded border border-gray-300 hover:bg-gray-100"
+              aria-label="Mobile view">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              </svg>
+            </button>
+            <button id="desktop-view" class="p-1 rounded border border-gray-300 hover:bg-gray-100 bg-gray-200"
+              aria-label="Desktop view">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </button>
+          </div>
         </div>
         <div id="preview-container" class="w-full overflow-auto">
           <iframe id="preview-frame" class="w-full" title="Email preview"></iframe>
@@ -95,10 +98,11 @@
 
       <div class="resizer" id="resizer"></div>
 
+      <!-- Right Panel -->
       <div id="right-panel" class="md:w-1/2 p-2">
-        <h2 class="text-lg font-semibold mb-2">Email Editor</h2>
-        <div class="mb-2">
-          <button id="template-elements-btn" class="w-full p-2 border rounded bg-gray-50 hover:bg-gray-100 text-left">
+        <div class="flex justify-between items-center mb-2">
+          <h2 class="text-lg font-semibold">Email Editor</h2>
+          <button id="template-elements-btn" class="px-3 py-1 border rounded bg-gray-50 hover:bg-gray-100">
             Insert Template Element
           </button>
         </div>
@@ -120,7 +124,7 @@
           </svg>
         </button>
       </div>
-      <div id="template-elements-container" class="grid grid-cols-1 gap-4 max-h-96 overflow-y-auto">
+      <div id="template-elements-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-96 overflow-y-auto">
         <!-- Template elements will be inserted here via JavaScript -->
       </div>
     </div>
@@ -156,7 +160,7 @@
           </svg>
         </button>
       </div>
-      <div id="liquid-vars-container" class="grid grid-cols-1 gap-4 max-h-96 overflow-y-auto">
+      <div id="liquid-vars-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-96 overflow-y-auto">
         <!-- Liquid variables will be inserted here via JavaScript -->
       </div>
     </div>

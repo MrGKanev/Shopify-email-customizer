@@ -1,11 +1,15 @@
 /* Main layout styles */
 #editor {
-  height: calc(100vh - 8rem);
+  height: calc(100vh - 9rem);
+  max-height: 90vh;
   width: 100%;
+  resize: vertical;
+  overflow: auto;
 }
 
 #preview-frame {
-  height: calc(100vh - 8rem);
+  height: calc(100vh - 9rem);
+  max-height: 90vh;
   width: 100%;
   border: 1px solid #e2e8f0;
   background-color: white;
@@ -15,6 +19,47 @@
   background-color: #cbd5e0;
   cursor: col-resize;
   width: 4px;
+}
+
+/* Make the main container responsive */
+.w-full.px-2 {
+  max-width: 100%;
+  overflow-x: hidden;
+  padding-bottom: 1rem;
+}
+
+/* Make panels responsive */
+#left-panel,
+#right-panel {
+  min-width: 300px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Panel header areas */
+#left-panel .flex.justify-between.items-center,
+#right-panel .flex.justify-between.items-center {
+  flex-shrink: 0;
+}
+
+/* Panel content areas */
+#preview-container,
+#editor {
+  flex-grow: 1;
+  overflow: auto;
+}
+
+/* Ensure the preview container takes remaining height */
+#preview-container {
+  height: 100%;
+}
+
+/* Main flex container */
+.flex.flex-col.md\:flex-row {
+  max-height: calc(100vh - 5rem);
+  height: calc(100vh - 5rem);
+  overflow: hidden;
 }
 
 /* Code Toolbar styles */
@@ -28,6 +73,8 @@
   border-bottom: none;
   border-top-left-radius: 0.25rem;
   border-top-right-radius: 0.25rem;
+  overflow-x: auto;
+  flex-shrink: 0;
 }
 
 #code-toolbar button {
@@ -41,6 +88,7 @@
   border-radius: 4px;
   font-size: 14px;
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 #code-toolbar button:hover {
@@ -57,6 +105,19 @@
   height: 24px;
   background-color: #e2e8f0;
   margin: 0 4px;
+  flex-shrink: 0;
+}
+
+/* Compact template elements button */
+#template-elements-btn {
+  white-space: nowrap;
+  font-size: 0.875rem;
+}
+
+/* Mobile/Desktop View buttons */
+#mobile-view,
+#desktop-view {
+  flex-shrink: 0;
 }
 
 /* Toolbar button groups */
@@ -132,17 +193,22 @@ pre {
   white-space: pre-wrap;
 }
 
-/* Right panel layout */
-#right-panel {
-  display: flex;
-  flex-direction: column;
-}
+/* Media queries for better responsive behavior */
+@media (max-width: 768px) {
 
-#right-panel h2 {
-  margin-bottom: 0.5rem;
-}
+  #left-panel,
+  #right-panel {
+    width: 100% !important;
+    height: auto;
+  }
 
-/* Template elements button */
-#template-elements-btn {
-  margin-bottom: 0.5rem;
+  .flex.flex-col.md\:flex-row {
+    height: auto;
+    max-height: none;
+  }
+
+  #editor,
+  #preview-frame {
+    height: 70vh;
+  }
 }
