@@ -3,6 +3,8 @@
  * 
  * This is a more robust implementation that avoids the circular dependency
  * issues and better handles Liquid tags in the template.
+ * 
+ * MODIFIED: Visual editor is shown at the top by default without needing to toggle
  */
 
 // Global variables
@@ -40,7 +42,8 @@ function initWysiwygEditor() {
   if (!editorContainer) {
     editorContainer = document.createElement('div');
     editorContainer.id = 'wysiwyg-editor';
-    editorContainer.style.display = 'none'; // Initially hidden
+    // MODIFIED: Show WYSIWYG editor by default
+    editorContainer.style.display = 'block';
     
     // Create editor components
     const editorToolbar = document.createElement('div');
@@ -54,9 +57,17 @@ function initWysiwygEditor() {
     editorContainer.appendChild(editorToolbar);
     editorContainer.appendChild(editorContent);
     
+    // MODIFIED: Add the WYSIWYG editor at the top of the right panel
     const rightPanel = document.getElementById('right-panel');
     if (rightPanel) {
-      rightPanel.insertBefore(editorContainer, document.getElementById('editor'));
+      // Insert before the first child
+      rightPanel.insertBefore(editorContainer, rightPanel.firstChild);
+      
+      // Hide the code editor initially
+      const codeEditor = document.getElementById('editor');
+      if (codeEditor) {
+        codeEditor.style.display = 'none';
+      }
     } else {
       console.error('Right panel not found. Cannot initialize WYSIWYG editor.');
       return;
@@ -100,6 +111,14 @@ function initWysiwygEditor() {
     // Initialize tracking of liquid tags
     initLiquidTagHighlighting();
     
+    // MODIFIED: Immediately sync code to WYSIWYG on initial load - with a delay to ensure code is ready
+    setTimeout(() => {
+      safeUpdateWysiwygEditor();
+    }, 300);
+    
+    // Dispatch event so other components know Quill is ready
+    document.dispatchEvent(new Event('quillReady'));
+    
     console.log('WYSIWYG editor initialized successfully');
   } catch (error) {
     console.error('Error initializing Quill editor:', error);
@@ -114,12 +133,12 @@ function addEditorToggle() {
   // Create toggle buttons
   const codeBtn = document.createElement('button');
   codeBtn.id = 'code-editor-btn';
-  codeBtn.className = 'px-3 py-1 border rounded bg-gray-200 hover:bg-gray-300';
+  codeBtn.className = 'px-3 py-1 border rounded hover:bg-gray-300'; // MODIFIED: Not selected by default
   codeBtn.textContent = 'Code Editor';
   
   const wysiwygBtn = document.createElement('button');
   wysiwygBtn.id = 'wysiwyg-editor-btn';
-  wysiwygBtn.className = 'px-3 py-1 border rounded hover:bg-gray-300';
+  wysiwygBtn.className = 'px-3 py-1 border rounded bg-gray-200 hover:bg-gray-300'; // MODIFIED: Selected by default
   wysiwygBtn.textContent = 'Visual Editor';
   
   // Add event listeners
@@ -135,9 +154,15 @@ function addEditorToggle() {
   container.appendChild(codeBtn);
   container.appendChild(wysiwygBtn);
   
-  // Insert container before editor
+  // MODIFIED: Insert container right after the h2 title
   const rightPanel = document.getElementById('right-panel');
-  rightPanel.insertBefore(container, document.getElementById('template-elements-btn').parentNode);
+  const editorTitle = rightPanel.querySelector('h2');
+  if (editorTitle && editorTitle.nextSibling) {
+    rightPanel.insertBefore(container, editorTitle.nextSibling);
+  } else {
+    // Fallback insertion
+    rightPanel.insertBefore(container, rightPanel.firstChild.nextSibling);
+  }
 }
 
 // Safe toggle editor function
@@ -166,8 +191,10 @@ function toggleEditor(type) {
     if (type === 'wysiwyg') {
       // Only sync if we have a quill editor instance
       if (quillEditor) {
-        // Update Quill content from code editor
-        safeUpdateWysiwygEditor();
+        // Update Quill content from code editor if it's currently visible
+        if (codeEditor.style.display === 'block') {
+          safeUpdateWysiwygEditor();
+        }
         
         // Show WYSIWYG editor, hide code editor
         codeEditor.style.display = 'none';
@@ -246,8 +273,10 @@ function safeUpdateWysiwygEditor() {
     // Extract body content 
     const bodyContent = extractBodyContent(html);
     
-    // Set content in Quill
-    quillEditor.root.innerHTML = bodyContent;
+    // Set content in Quill, using insertText instead of direct innerHTML
+    // This avoids the Quill "emit" error
+    quillEditor.setText(''); // Clear existing content
+    quillEditor.clipboard.dangerouslyPasteHTML(0, bodyContent);
     
     // Highlight liquid tags
     highlightLiquidTags();
@@ -335,29 +364,32 @@ function initLiquidTagHighlighting() {
   `;
   document.head.appendChild(style);
   
-  // Add observer for dynamic changes
-  const observer = new MutationObserver(() => {
-    if (quillEditor && !isUpdatingFromCodeEditor) {
-      // Only highlight if not currently syncing from code editor
-      highlightLiquidTags();
-    }
-  });
+  // We're avoiding MutationObserver due to compatibility issues
+  // Instead, we'll highlight liquid tags after specific operations
   
-  // Start observing once editor is ready
-  if (quillEditor && quillEditor.root) {
-    observer.observe(quillEditor.root, { 
-      childList: true, 
-      subtree: true,
-      characterData: true
+  // Add a handler to Quill's text-change event to process liquid tags
+  if (quillEditor) {
+    quillEditor.on('text-change', function(delta, oldContents, source) {
+      // Only process if the change came from user, not programmatic
+      if (source === 'user' && !isUpdatingFromCodeEditor) {
+        // Use a timeout to avoid recursion
+        setTimeout(() => {
+          highlightLiquidTags();
+        }, 100);
+      }
     });
   } else {
     // If editor not ready, wait and try again
     setTimeout(() => {
-      if (quillEditor && quillEditor.root) {
-        observer.observe(quillEditor.root, { 
-          childList: true, 
-          subtree: true,
-          characterData: true
+      if (quillEditor) {
+        quillEditor.on('text-change', function(delta, oldContents, source) {
+          // Only process if the change came from user, not programmatic
+          if (source === 'user' && !isUpdatingFromCodeEditor) {
+            // Use a timeout to avoid recursion
+            setTimeout(() => {
+              highlightLiquidTags();
+            }, 100);
+          }
         });
       }
     }, 1000);
@@ -368,75 +400,33 @@ function initLiquidTagHighlighting() {
 function highlightLiquidTags() {
   if (!quillEditor || !quillEditor.root) return;
   
-  const processNode = (node) => {
-    if (node.nodeType === Node.TEXT_NODE) {
-      let content = node.textContent;
-      let modified = false;
-      
-      // Check for liquid variable tags
-      if (content.match(/{{\s*[^}]*}}/)) {
-        const wrapper = document.createElement('div');
-        content = content.replace(/({{\s*[^}]*}})/g, 
-          '<span class="ql-liquid" data-liquid-type="variable">$1</span>');
-        wrapper.innerHTML = content;
-        
-        // Replace the text node with the highlighted content
-        const fragment = document.createDocumentFragment();
-        while (wrapper.firstChild) {
-          fragment.appendChild(wrapper.firstChild);
-        }
-        
-        node.parentNode.replaceChild(fragment, node);
-        modified = true;
-      } 
-      // Check for liquid control flow tags
-      else if (content.match(/{%\s*[^%}]*\s*%}/)) {
-        const wrapper = document.createElement('div');
-        content = content.replace(/({%\s*[^%}]*\s*%})/g, 
-          '<span class="ql-liquid" data-liquid-type="control">$1</span>');
-        wrapper.innerHTML = content;
-        
-        // Replace the text node with the highlighted content
-        const fragment = document.createDocumentFragment();
-        while (wrapper.firstChild) {
-          fragment.appendChild(wrapper.firstChild);
-        }
-        
-        node.parentNode.replaceChild(fragment, node);
-        modified = true;
-      }
-      
-      return modified;
-    }
-    
-    return false;
-  };
-  
-  // Process all text nodes
-  const processTextNodes = (root) => {
-    if (!root) return;
-    
-    const treeWalker = document.createTreeWalker(
-      root,
-      NodeFilter.SHOW_TEXT,
-      null,
-      false
-    );
-    
-    const nodesToProcess = [];
-    while (treeWalker.nextNode()) {
-      nodesToProcess.push(treeWalker.currentNode);
-    }
-    
-    // Process nodes in reverse order to avoid issues with DOM changes
-    for (let i = nodesToProcess.length - 1; i >= 0; i--) {
-      processNode(nodesToProcess[i]);
-    }
-  };
-  
+  // Using a simpler approach to avoid MutationObserver issues
   try {
-    // Process the editor content
-    processTextNodes(quillEditor.root);
+    // Get HTML content from quill
+    const content = quillEditor.root.innerHTML;
+    
+    // Process liquid tags directly
+    const processedContent = content
+      // Variable tags
+      .replace(/({{\s*[^}]*}})/g, 
+        '<span class="ql-liquid" data-liquid-type="variable">$1</span>')
+      // Control flow tags
+      .replace(/({%\s*[^%}]*\s*%})/g, 
+        '<span class="ql-liquid" data-liquid-type="control">$1</span>');
+    
+    // Only update if there are changes to avoid recursion
+    if (processedContent !== content) {
+      // We need to temporarily disable the observer to prevent an infinite loop
+      isUpdatingFromCodeEditor = true;
+      
+      // Apply the processed content back to the editor
+      quillEditor.clipboard.dangerouslyPasteHTML(0, processedContent);
+      
+      // Re-enable observer
+      setTimeout(() => {
+        isUpdatingFromCodeEditor = false;
+      }, 100);
+    }
   } catch (error) {
     console.error('Error highlighting liquid tags:', error);
   }

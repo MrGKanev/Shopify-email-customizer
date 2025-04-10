@@ -11,7 +11,7 @@ function updatePreview() {
     // Replace Liquid tags with sample data for preview
     let html = editor.getValue()
         .replace(/{{ shop.name }}/g, 'Your Shopify Store')
-        .replace(/{{ shop.email_logo_url }}/g, 'https://via.placeholder.com/150x50')
+        .replace(/{{ shop.email_logo_url }}/g, '/api/placeholder/150/50')
         .replace(/{{ customer.first_name }}/g, 'John')
         .replace(/{{ order.name }}/g, '#1001')
         .replace(/{{ order.created_at \| date: "%B %d, %Y" }}/g, 'March 27, 2025')
