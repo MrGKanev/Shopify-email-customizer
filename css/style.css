@@ -17,52 +17,90 @@
   width: 4px;
 }
 
-/* WYSIWYG Editor styles */
-#wysiwyg-editor {
-  height: calc(100vh - 8rem);
-  width: 100%;
+/* Code Toolbar styles */
+#code-toolbar {
   display: flex;
-  flex-direction: column;
-}
-
-#quill-editor {
-  height: calc(100vh - 12rem);
-  overflow-y: auto;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 6px;
+  background-color: #f7fafc;
   border: 1px solid #e2e8f0;
-  border-top: none;
-  background-color: white;
-}
-
-.ql-toolbar.ql-snow {
-  border-color: #e2e8f0 !important;
+  border-bottom: none;
   border-top-left-radius: 0.25rem;
   border-top-right-radius: 0.25rem;
 }
 
-.ql-container.ql-snow {
-  border-color: #e2e8f0 !important;
-  border-bottom-left-radius: 0.25rem;
-  border-bottom-right-radius: 0.25rem;
+#code-toolbar button {
+  min-width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e2e8f0;
+  background-color: white;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: all 0.2s ease;
 }
 
-/* Liquid tag styling */
-.ql-liquid {
-  display: inline-block;
-  padding: 2px 4px;
-  border-radius: 3px;
-  font-family: monospace;
-  user-select: all;
+#code-toolbar button:hover {
+  background-color: #f0f4f8;
+  border-color: #cbd5e0;
 }
 
-.ql-liquid[data-liquid-type="variable"] {
-  background-color: #e0f7fa;
-  color: #0277bd;
+#code-toolbar button:active {
+  background-color: #e2e8f0;
 }
 
-.ql-liquid[data-liquid-type="control"] {
-  background-color: #fff9c4;
-  color: #827717;
+#code-toolbar .separator {
+  width: 1px;
+  height: 24px;
+  background-color: #e2e8f0;
+  margin: 0 4px;
 }
+
+/* Toolbar button groups */
+.btn-group {
+  display: flex;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.btn-group button {
+  border-radius: 0 !important;
+  border-right: none;
+}
+
+.btn-group button:first-child {
+  border-top-left-radius: 4px !important;
+  border-bottom-left-radius: 4px !important;
+}
+
+.btn-group button:last-child {
+  border-top-right-radius: 4px !important;
+  border-bottom-right-radius: 4px !important;
+  border-right: 1px solid #e2e8f0;
+}
+
+/* Template/Component buttons */
+.component-btn {
+  display: flex;
+  align-items: center;
+  padding: 6px 10px !important;
+}
+
+.component-btn svg {
+  margin-right: 6px;
+  width: 16px;
+  height: 16px;
+}
+
+/* Enhanced code editor */
+.ace_editor {
+  border: 1px solid #e2e8f0;
+  border-radius: 0 0 0.25rem 0.25rem;
+}
+
 /* Modal styles */
 .liquid-block-item,
 .liquid-var-item,
@@ -92,4 +130,19 @@ code {
 
 pre {
   white-space: pre-wrap;
+}
+
+/* Right panel layout */
+#right-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+#right-panel h2 {
+  margin-bottom: 0.5rem;
+}
+
+/* Template elements button */
+#template-elements-btn {
+  margin-bottom: 0.5rem;
 }
