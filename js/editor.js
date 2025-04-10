@@ -3,12 +3,13 @@
  */
 
 // Initialize Ace Editor - this is now done in main.js to ensure proper order
-// const editor = ace.edit("editor");
-// editor.setTheme("ace/theme/monokai");
-// editor.session.setMode("ace/mode/html");
+// Window-level editor variable to ensure global access
+// window.editor = ace.edit("editor");
+// window.editor.setTheme("ace/theme/monokai");
+// window.editor.session.setMode("ace/mode/html");
 
-// Default template HTML
-const defaultTemplate = `<!DOCTYPE html>
+// Default template HTML - make it globally accessible
+window.defaultTemplate = `<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -152,43 +153,3 @@ const defaultTemplate = `<!DOCTYPE html>
     </div>
 </body>
 </html>`;
-
-// We no longer auto-set the template - this is now handled in main.js
-// editor.setValue(defaultTemplate);
-// editor.clearSelection();
-
-// Auto update preview is now handled in main.js
-// editor.session.on('change', function() {
-//     updatePreview();
-// });
-
-// Panel resizing functionality
-const initResizer = () => {
-    const leftPanel = document.getElementById('left-panel');
-    const rightPanel = document.getElementById('right-panel');
-    const resizer = document.getElementById('resizer');
-    let isResizing = false;
-
-    resizer.addEventListener('mousedown', (e) => {
-        isResizing = true;
-        document.body.style.cursor = 'col-resize';
-    });
-
-    document.addEventListener('mousemove', (e) => {
-        if (!isResizing) return;
-        
-        const containerWidth = leftPanel.parentElement.clientWidth;
-        const newLeftPanelWidth = (e.clientX / containerWidth) * 100;
-        
-        leftPanel.style.width = `${newLeftPanelWidth}%`;
-        rightPanel.style.width = `${100 - newLeftPanelWidth}%`;
-        
-        const aceEditor = ace.edit("editor");
-        aceEditor.resize();
-    });
-
-    document.addEventListener('mouseup', () => {
-        isResizing = false;
-        document.body.style.cursor = 'default';
-    });
-};

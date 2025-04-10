@@ -1,19 +1,24 @@
 /**
  * Main application initialization
+ * Central initialization file that coordinates all app functionality
  */
 
 // Initialize the application when the DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
+    console.log("Initializing application...");
+    
     // Initialize the editor first (ensures editor is available for preview)
-    // This is defined in editor.js
-    const editor = ace.edit("editor");
-    editor.setTheme("ace/theme/monokai");
-    editor.session.setMode("ace/mode/html");
+    window.editor = ace.edit("editor");
+    window.editor.setTheme("ace/theme/monokai");
+    window.editor.session.setMode("ace/mode/html");
+    
+    console.log("Editor initialized");
     
     // Set default template if not already set
-    if (!editor.getValue()) {
-        editor.setValue(defaultTemplate);
-        editor.clearSelection();
+    if (!window.editor.getValue()) {
+        console.log("Setting default template");
+        window.editor.setValue(defaultTemplate);
+        window.editor.clearSelection();
     }
     
     // Initialize UI components
@@ -32,10 +37,13 @@ document.addEventListener('DOMContentLoaded', function() {
     enhanceAceEditor();
     
     // Set up the editor change event listener
-    editor.session.on('change', function() {
+    window.editor.session.on('change', function() {
         updatePreview();
     });
     
     // Initial preview update
-    setTimeout(updatePreview, 500); // Small delay to ensure everything is ready
+    console.log("Updating preview...");
+    setTimeout(updatePreview, 1000); // Longer delay to ensure everything is ready
+    
+    console.log("Initialization complete");
 });

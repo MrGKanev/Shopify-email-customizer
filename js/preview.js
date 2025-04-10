@@ -4,6 +4,8 @@
 
 // Update preview function
 function updatePreview() {
+    console.log("Updating preview...");
+    
     const previewFrame = document.getElementById('preview-frame');
     if (!previewFrame) {
         console.error('Preview frame not found');
@@ -16,17 +18,19 @@ function updatePreview() {
         return;
     }
     
-    // Get the Ace editor instance
-    const aceEditor = ace.edit("editor");
-    if (!aceEditor) {
-        console.error('Ace editor not initialized');
-        return;
-    }
-    
-    // Get HTML content from editor
-    const html = aceEditor.getValue();
-    if (!html) {
-        console.warn('Editor content is empty');
+    // Get HTML content from editor - using the global window.editor instance
+    let html;
+    try {
+        html = window.editor ? window.editor.getValue() : '';
+        console.log("Got editor content, length:", html ? html.length : 0);
+        
+        if (!html || html.trim() === '') {
+            console.warn('Editor content is empty, using default template');
+            html = window.defaultTemplate || '';
+        }
+    } catch (e) {
+        console.error('Error getting editor content:', e);
+        html = window.defaultTemplate || '';
     }
     
     // Open the preview document
@@ -36,7 +40,7 @@ function updatePreview() {
     let previewHtml = html
         .replace(/{{ shop.name }}/g, 'Your Shopify Store')
         // Use local image path for logo
-        .replace(/{{ shop.email_logo_url }}/g, '../img/logo.svg')
+        .replace(/{{ shop.email_logo_url }}/g, 'https://placehold.co/150x50?text=Shop+Logo')
         .replace(/{{ customer.first_name }}/g, 'John')
         .replace(/{{ order.name }}/g, '#1001')
         .replace(/{{ order.created_at \| date: "%B %d, %Y" }}/g, 'March 27, 2025')
@@ -73,30 +77,8 @@ function updatePreview() {
     });
     
     // Write the modified HTML to the preview
+    console.log("Writing HTML to preview document...");
     previewDocument.write(previewHtml);
     previewDocument.close();
+    console.log("Preview updated");
 }
-
-// Initialize responsive view buttons
-const initViewButtons = () => {
-    const mobileViewBtn = document.getElementById('mobile-view');
-    const desktopViewBtn = document.getElementById('desktop-view');
-    const previewFrame = document.getElementById('preview-frame');
-
-    if (!mobileViewBtn || !desktopViewBtn || !previewFrame) {
-        console.error('View buttons or preview frame not found');
-        return;
-    }
-
-    mobileViewBtn.addEventListener('click', function() {
-        this.classList.add('bg-gray-200');
-        desktopViewBtn.classList.remove('bg-gray-200');
-        previewFrame.style.width = '375px';
-    });
-    
-    desktopViewBtn.addEventListener('click', function() {
-        this.classList.add('bg-gray-200');
-        mobileViewBtn.classList.remove('bg-gray-200');
-        previewFrame.style.width = '100%';
-    });
-};

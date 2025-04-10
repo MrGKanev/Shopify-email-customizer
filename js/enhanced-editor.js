@@ -341,7 +341,7 @@ function enhanceTemplateElements() {
  * Helper function to wrap selected text in the editor with tags
  */
 function wrapSelection(startTag, endTag) {
-  const aceEditor = ace.edit("editor");
+  const aceEditor = window.editor || ace.edit("editor");
   const selection = aceEditor.getSelection();
   const range = selection.getRange();
   
@@ -371,7 +371,7 @@ function wrapSelection(startTag, endTag) {
  * Insert text at the current cursor position
  */
 function insertAtCursor(text) {
-  const aceEditor = ace.edit("editor");
+  const aceEditor = window.editor || ace.edit("editor");
   aceEditor.insert(text);
   aceEditor.focus();
 }
