@@ -2,10 +2,10 @@
  * Code Editor initialization and functionality
  */
 
-// Initialize Ace Editor
-const editor = ace.edit("editor");
-editor.setTheme("ace/theme/monokai");
-editor.session.setMode("ace/mode/html");
+// Initialize Ace Editor - this is now done in main.js to ensure proper order
+// const editor = ace.edit("editor");
+// editor.setTheme("ace/theme/monokai");
+// editor.session.setMode("ace/mode/html");
 
 // Default template HTML
 const defaultTemplate = `<!DOCTYPE html>
@@ -153,14 +153,14 @@ const defaultTemplate = `<!DOCTYPE html>
 </body>
 </html>`;
 
-// Set default template
-editor.setValue(defaultTemplate);
-editor.clearSelection();
+// We no longer auto-set the template - this is now handled in main.js
+// editor.setValue(defaultTemplate);
+// editor.clearSelection();
 
-// Auto update preview when editor changes
-editor.session.on('change', function() {
-    updatePreview();
-});
+// Auto update preview is now handled in main.js
+// editor.session.on('change', function() {
+//     updatePreview();
+// });
 
 // Panel resizing functionality
 const initResizer = () => {
@@ -183,7 +183,8 @@ const initResizer = () => {
         leftPanel.style.width = `${newLeftPanelWidth}%`;
         rightPanel.style.width = `${100 - newLeftPanelWidth}%`;
         
-        editor.resize();
+        const aceEditor = ace.edit("editor");
+        aceEditor.resize();
     });
 
     document.addEventListener('mouseup', () => {

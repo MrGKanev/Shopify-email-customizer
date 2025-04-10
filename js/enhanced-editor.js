@@ -10,20 +10,94 @@ if (typeof window.isEnhancedEditorInitialized === 'undefined') {
   window.isEnhancedEditorInitialized = false;
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  // Prevent multiple initializations
-  if (window.isEnhancedEditorInitialized) return;
-  window.isEnhancedEditorInitialized = true;
-  
-  // Initialize enhanced editor toolbar
-  createEnhancedToolbar();
-  
-  // Initialize keyboard shortcuts
-  initShortcuts();
-  
-  // Add event handlers for template insertions
-  enhanceTemplateInsertions();
-});
+/**
+ * Enhanced Ace editor initialization
+ * Adds autocomplete, snippets, and other features to the Ace editor
+ */
+function enhanceAceEditor() {
+  // Enable autocomplete, snippets, and other features
+  const aceEditor = ace.edit("editor");
+
+  // Enable autocompletion
+  aceEditor.setOptions({
+    enableBasicAutocompletion: true,
+    enableSnippets: true,
+    enableLiveAutocompletion: true,
+    showPrintMargin: false,
+    fontSize: 14
+  });
+
+  // Add HTML tag autocompletion
+  const htmlCompleter = {
+    getCompletions: function (editor, session, pos, prefix, callback) {
+      const completions = [
+        { value: 'div', meta: 'tag' },
+        { value: 'span', meta: 'tag' },
+        { value: 'table', meta: 'tag' },
+        { value: 'tr', meta: 'tag' },
+        { value: 'td', meta: 'tag' },
+        { value: 'th', meta: 'tag' },
+        { value: 'p', meta: 'tag' },
+        { value: 'strong', meta: 'tag' },
+        { value: 'em', meta: 'tag' },
+        { value: 'a', meta: 'tag' },
+        { value: 'img', meta: 'tag' },
+        { value: 'h1', meta: 'tag' },
+        { value: 'h2', meta: 'tag' },
+        { value: 'h3', meta: 'tag' },
+        { value: 'style', meta: 'attribute', snippet: 'style="${1:property}: ${2:value};"' },
+        { value: 'class', meta: 'attribute', snippet: 'class="${1:className}"' },
+        { value: 'id', meta: 'attribute', snippet: 'id="${1:elementId}"' },
+        { value: 'href', meta: 'attribute', snippet: 'href="${1:url}"' },
+        { value: 'src', meta: 'attribute', snippet: 'src="${1:url}"' }
+      ];
+
+      callback(null, completions.map(function (completion) {
+        return {
+          caption: completion.value,
+          value: completion.snippet || completion.value,
+          meta: completion.meta,
+          score: 1000
+        };
+      }));
+    }
+  };
+
+  // Add liquid tag autocompletion
+  const liquidCompleter = {
+    getCompletions: function (editor, session, pos, prefix, callback) {
+      const completions = [
+        { value: 'shop.name', meta: 'liquid', snippet: '{{ shop.name }}' },
+        { value: 'customer.first_name', meta: 'liquid', snippet: '{{ customer.first_name }}' },
+        { value: 'order.name', meta: 'liquid', snippet: '{{ order.name }}' },
+        { value: 'for', meta: 'liquid', snippet: '{% for ${1:item} in ${2:collection} %}\n\t${3}\n{% endfor %}' },
+        { value: 'if', meta: 'liquid', snippet: '{% if ${1:condition} %}\n\t${2}\n{% endif %}' },
+        { value: 'else', meta: 'liquid', snippet: '{% else %}\n\t${1}\n' },
+        { value: 'elsif', meta: 'liquid', snippet: '{% elsif ${1:condition} %}\n\t${2}\n' }
+      ];
+
+      callback(null, completions.map(function (completion) {
+        return {
+          caption: completion.value,
+          value: completion.snippet || completion.value,
+          meta: completion.meta,
+          score: 1000
+        };
+      }));
+    }
+  };
+
+  // Add completers
+  if (ace.require) {
+    try {
+      const langTools = ace.require("ace/ext/language_tools");
+      langTools.addCompleter(htmlCompleter);
+      langTools.addCompleter(liquidCompleter);
+    } catch (e) {
+      console.error("Could not load language tools:", e);
+    }
+  }
+}
 
 /**
  * Create an enhanced toolbar above the code editor
@@ -463,4 +537,19 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Prevent multiple initializations
+  if (window.isEnhancedEditorInitialized) return;
+  window.isEnhancedEditorInitialized = true;
+  
+  // Initialize enhanced editor toolbar
+  createEnhancedToolbar();
+  
+  // Initialize keyboard shortcuts
+  initShortcuts();
+  
+  // Add event handlers for template insertions
+  enhanceTemplateInsertions();
 });
