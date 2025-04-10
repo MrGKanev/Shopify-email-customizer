@@ -1,8 +1,5 @@
 /**
- * Improved WYSIWYG Editor for Shopify Email Customizer
- * 
- * This implementation loads the visual editor first and ensures
- * the template design stays intact without breaking.
+ * Simplified Visual Editor with Structure Preservation
  */
 
 // Global variables
@@ -11,8 +8,17 @@ let isUpdatingFromWysiwyg = false;
 let isUpdatingFromCodeEditor = false;
 let editorInitialized = false;
 
-// Add Quill editor scripts and styles to the head
+// Initialize on document load
 document.addEventListener('DOMContentLoaded', function() {
+  // Create toggle buttons
+  addEditorToggle();
+  
+  // Add Quill resources
+  loadQuillResources();
+});
+
+// Load Quill JS and CSS resources
+function loadQuillResources() {
   // Add Quill CSS
   const quillCSS = document.createElement('link');
   quillCSS.rel = 'stylesheet';
@@ -24,24 +30,59 @@ document.addEventListener('DOMContentLoaded', function() {
   quillScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.min.js';
   document.head.appendChild(quillScript);
   
-  // Initialize WYSIWYG editor when Quill is loaded
+  // Initialize editor when script loads
   quillScript.onload = function() {
-    // Create editor first but don't initialize Quill immediately
-    setupEditorContainer();
-    
-    // Wait a short delay to ensure default template is loaded in the code editor
-    setTimeout(initWysiwygEditor, 300);
+    setupVisualEditor();
   };
-});
+}
 
-// Setup the editor container without initializing Quill
-function setupEditorContainer() {
-  // Create the editor container if it doesn't exist
+// Add toggle buttons to switch between editors
+function addEditorToggle() {
+  const container = document.createElement('div');
+  container.className = 'mb-2 flex space-x-2';
+  
+  // Create toggle buttons
+  const codeBtn = document.createElement('button');
+  codeBtn.id = 'code-editor-btn';
+  codeBtn.className = 'px-3 py-1 border rounded bg-gray-200 hover:bg-gray-300'; // Selected by default
+  codeBtn.textContent = 'Code Editor';
+  
+  const wysiwygBtn = document.createElement('button');
+  wysiwygBtn.id = 'wysiwyg-editor-btn';
+  wysiwygBtn.className = 'px-3 py-1 border rounded hover:bg-gray-300'; // Not selected by default
+  wysiwygBtn.textContent = 'Visual Editor';
+  
+  // Add event listeners
+  codeBtn.addEventListener('click', function() {
+    showCodeEditor();
+  });
+  
+  wysiwygBtn.addEventListener('click', function() {
+    showVisualEditor();
+  });
+  
+  // Add buttons to container
+  container.appendChild(codeBtn);
+  container.appendChild(wysiwygBtn);
+  
+  // Insert container in the appropriate place
+  const rightPanel = document.getElementById('right-panel');
+  const templateButton = document.getElementById('template-elements-btn');
+  
+  if (rightPanel && templateButton) {
+    const buttonContainer = templateButton.parentNode;
+    rightPanel.insertBefore(container, buttonContainer);
+  }
+}
+
+// Setup the visual editor
+function setupVisualEditor() {
+  // Create the container if it doesn't exist
   let editorContainer = document.getElementById('wysiwyg-editor');
   if (!editorContainer) {
     editorContainer = document.createElement('div');
     editorContainer.id = 'wysiwyg-editor';
-    editorContainer.style.display = 'block'; // Show WYSIWYG editor by default
+    editorContainer.style.display = 'none'; // Hidden by default
     
     // Create editor components
     const editorToolbar = document.createElement('div');
@@ -55,497 +96,318 @@ function setupEditorContainer() {
     editorContainer.appendChild(editorToolbar);
     editorContainer.appendChild(editorContent);
     
-    // Add the WYSIWYG editor at the top of the right panel
+    // Add the editor container to the right panel
     const rightPanel = document.getElementById('right-panel');
-    if (rightPanel) {
-      // Insert before the first child
-      rightPanel.insertBefore(editorContainer, rightPanel.firstChild);
-      
-      // Hide the code editor initially
-      const codeEditor = document.getElementById('editor');
-      if (codeEditor) {
-        codeEditor.style.display = 'none';
-      }
-    } else {
-      console.error('Right panel not found. Cannot initialize WYSIWYG editor.');
-      return;
+    const codeEditor = document.getElementById('editor');
+    
+    if (rightPanel && codeEditor) {
+      rightPanel.insertBefore(editorContainer, codeEditor);
     }
   }
   
-  // Add editor toggle buttons
-  addEditorToggle();
+  // Initialize Quill
+  initializeQuill();
 }
 
-// Initialize WYSIWYG Editor
-function initWysiwygEditor() {
-  // Make sure Quill is available
+// Initialize Quill editor
+function initializeQuill() {
   if (typeof Quill === 'undefined') {
-    console.error('Quill library not loaded. Please check the script tag.');
+    console.error('Quill library not loaded');
     return;
   }
   
   try {
-    // Initialize Quill with simpler toolbar options
+    // Initialize with basic toolbar
     quillEditor = new Quill('#quill-editor', {
       modules: {
         toolbar: [
-          ['bold', 'italic', 'underline', 'strike'],
-          ['blockquote'],
+          ['bold', 'italic', 'underline'],
           [{ 'header': 1 }, { 'header': 2 }],
           [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-          [{ 'color': [] }, { 'background': [] }],
-          [{ 'align': [] }],
-          ['clean']
+          ['link', 'clean']
         ]
       },
       theme: 'snow'
     });
     
-    // Mark as initialized
-    editorInitialized = true;
-    
-    // Disable the text-change Quill event that causes issues
-    quillEditor.off('text-change');
-    
-    // Add safe, debounced change handler
+    // Add change handler with delay
     quillEditor.on('text-change', function(delta, oldContents, source) {
-      // Only update if change was made by user, not programmatically
       if (source === 'user' && !isUpdatingFromCodeEditor) {
-        // Use debounce to prevent rapid updates
         clearTimeout(window.quillChangeTimeout);
         window.quillChangeTimeout = setTimeout(function() {
-          if (!isUpdatingFromCodeEditor) {
-            safeUpdateCodeEditor();
-          }
-        }, 1000); // Longer delay to prevent constant updates
+          syncToCodeEditor();
+        }, 800); // Delay to prevent constant updates
       }
     });
     
-    // Load the content from code editor to WYSIWYG
-    loadContentIntoEditor();
-    
-    // Dispatch event so other components know Quill is ready
-    document.dispatchEvent(new Event('quillReady'));
-    
-    console.log('WYSIWYG editor initialized successfully');
+    editorInitialized = true;
+    console.log('Visual editor initialized');
   } catch (error) {
     console.error('Error initializing Quill editor:', error);
   }
 }
 
-// Load content into the editor
-function loadContentIntoEditor() {
-  try {
-    // Wait for ACE editor to be fully initialized 
-    if (!ace || !ace.edit('editor')) {
-      setTimeout(loadContentIntoEditor, 200);
-      return;
-    }
-    
-    // Prepare loading state
-    isUpdatingFromCodeEditor = true;
-    
-    // Get default template HTML from the code editor
-    const codeEditor = ace.edit('editor');
-    const defaultTemplate = codeEditor.getValue();
-    
-    // Add placeholder content to Quill to indicate loading
-    quillEditor.setText('Loading template...');
-    
-    // Extract and insert the HTML into the WYSIWYG editor safely
-    setTimeout(function() {
-      try {
-        // Get the body content
-        const bodyContent = extractBodyContent(defaultTemplate);
-        
-        // First load - treat liquid tags carefully
-        quillEditor.setText(''); // Clear existing content
-        quillEditor.clipboard.dangerouslyPasteHTML(0, bodyContent);
-        
-        // Initialize liquid CSS styles
-        addLiquidStyles();
-        
-        console.log('Template loaded successfully into WYSIWYG editor');
-      } catch (e) {
-        console.error('Error processing template:', e);
-        // Fallback to simple text if there's an error
-        quillEditor.setText('Error loading template. Please check console for details.');
-      } finally {
-        // Reset loading state
-        isUpdatingFromCodeEditor = false;
-      }
-    }, 500);
-  } catch (error) {
-    console.error('Error in loadContentIntoEditor:', error);
-    isUpdatingFromCodeEditor = false;
-  }
-}
-
-// Add liquid tag styles
-function addLiquidStyles() {
-  if (document.getElementById('liquid-styles')) return;
-  
-  const style = document.createElement('style');
-  style.id = 'liquid-styles';
-  style.textContent = `
-    .ql-liquid {
-      display: inline-block;
-      padding: 2px 4px;
-      border-radius: 3px;
-      font-family: monospace;
-      user-select: all;
-    }
-    .ql-liquid[data-liquid-type="variable"] {
-      background-color: #e0f7fa;
-      color: #0277bd;
-    }
-    .ql-liquid[data-liquid-type="control"] {
-      background-color: #fff9c4;
-      color: #827717;
-    }
-  `;
-  document.head.appendChild(style);
-}
-
-// Add toggle buttons to switch between WYSIWYG and code editor
-function addEditorToggle() {
-  const container = document.createElement('div');
-  container.className = 'mb-2 flex space-x-2';
-  
-  // Create toggle buttons
-  const codeBtn = document.createElement('button');
-  codeBtn.id = 'code-editor-btn';
-  codeBtn.className = 'px-3 py-1 border rounded hover:bg-gray-300'; // Not selected by default
-  codeBtn.textContent = 'Code Editor';
-  
-  const wysiwygBtn = document.createElement('button');
-  wysiwygBtn.id = 'wysiwyg-editor-btn';
-  wysiwygBtn.className = 'px-3 py-1 border rounded bg-gray-200 hover:bg-gray-300'; // Selected by default
-  wysiwygBtn.textContent = 'Visual Editor';
-  
-  // Add event listeners
-  codeBtn.addEventListener('click', function() {
-    safeToggleEditor('code');
-  });
-  
-  wysiwygBtn.addEventListener('click', function() {
-    safeToggleEditor('wysiwyg');
-  });
-  
-  // Add buttons to container
-  container.appendChild(codeBtn);
-  container.appendChild(wysiwygBtn);
-  
-  // Insert container right after the h2 title
-  const rightPanel = document.getElementById('right-panel');
-  const editorTitle = rightPanel.querySelector('h2');
-  if (editorTitle && editorTitle.nextSibling) {
-    rightPanel.insertBefore(container, editorTitle.nextSibling);
-  } else {
-    // Fallback insertion
-    rightPanel.insertBefore(container, rightPanel.firstChild.nextSibling);
-  }
-}
-
-// Safe toggle editor function
-function safeToggleEditor(type) {
-  try {
-    toggleEditor(type);
-  } catch (error) {
-    console.error('Error toggling editor:', error);
-    showToast('Error toggling editor. Please try again.', 'error');
-  }
-}
-
-// Toggle between editors
-function toggleEditor(type) {
+// Show the code editor
+function showCodeEditor() {
   const codeEditor = document.getElementById('editor');
-  const wysiwygContainer = document.getElementById('wysiwyg-editor');
+  const visualEditor = document.getElementById('wysiwyg-editor');
   const codeBtn = document.getElementById('code-editor-btn');
-  const wysiwygBtn = document.getElementById('wysiwyg-editor-btn');
+  const visualBtn = document.getElementById('wysiwyg-editor-btn');
   
-  if (!codeEditor || !wysiwygContainer) {
-    console.error('Editor elements not found');
-    return;
+  if (!codeEditor || !visualEditor) return;
+  
+  // Sync changes from visual editor if needed
+  if (visualEditor.style.display !== 'none' && quillEditor) {
+    syncToCodeEditor();
   }
   
+  // Update display
+  codeEditor.style.display = 'block';
+  visualEditor.style.display = 'none';
+  
+  // Update button states
+  codeBtn.classList.add('bg-gray-200');
+  visualBtn.classList.remove('bg-gray-200');
+  
+  // Resize Ace editor to fit container
   try {
-    if (type === 'wysiwyg') {
-      // Check if editor is initialized
-      if (!editorInitialized) {
-        // Wait for editor to initialize
-        showToast('Visual editor is still loading. Please wait...', 'info');
-        return;
-      }
-      
-      // Only sync if we have a quill editor instance
-      if (quillEditor) {
-        // Update Quill content from code editor if it's currently visible
-        if (codeEditor.style.display === 'block') {
-          safeUpdateWysiwygEditor();
-        }
-        
-        // Show WYSIWYG editor, hide code editor
-        codeEditor.style.display = 'none';
-        wysiwygContainer.style.display = 'block';
-      } else {
-        console.error('Quill editor not initialized');
-        return;
-      }
-    } else {
-      // If we're already showing the code editor, do nothing
-      if (codeEditor.style.display !== 'none') {
-        return;
-      }
-      
-      // Update code editor from Quill if needed
-      safeUpdateCodeEditor();
-      
-      // Show code editor, hide WYSIWYG editor
-      codeEditor.style.display = 'block';
-      wysiwygContainer.style.display = 'none';
-      
-      // Make sure Ace editor refreshes
-      const aceEditor = ace.edit('editor');
-      if (aceEditor) {
-        aceEditor.resize();
-      }
-    }
-    
-    // Update button states
-    if (codeBtn && wysiwygBtn) {
-      if (type === 'wysiwyg') {
-        codeBtn.classList.remove('bg-gray-200');
-        wysiwygBtn.classList.add('bg-gray-200');
-      } else {
-        codeBtn.classList.add('bg-gray-200');
-        wysiwygBtn.classList.remove('bg-gray-200');
-      }
-    }
-  } catch (error) {
-    console.error('Error toggling editors:', error);
-    throw error;
+    const aceEditor = ace.edit('editor');
+    aceEditor.resize();
+  } catch (e) {
+    console.error('Error resizing code editor:', e);
   }
 }
 
-// Safely extract body content from full HTML
-function extractBodyContent(html) {
-  if (!html) return '';
+// Show the visual editor
+function showVisualEditor() {
+  const codeEditor = document.getElementById('editor');
+  const visualEditor = document.getElementById('wysiwyg-editor');
+  const codeBtn = document.getElementById('code-editor-btn');
+  const visualBtn = document.getElementById('wysiwyg-editor-btn');
   
+  if (!codeEditor || !visualEditor || !quillEditor) return;
+  
+  // Copy content from code editor to visual editor
+  syncToVisualEditor();
+  
+  // Update display
+  codeEditor.style.display = 'none';
+  visualEditor.style.display = 'block';
+  
+  // Update button states
+  codeBtn.classList.remove('bg-gray-200');
+  visualBtn.classList.add('bg-gray-200');
+}
+
+// Store original code editor content
+let originalContent = '';
+let editTarget = 'body'; // Default target: 'body', 'selection', or 'full'
+
+// Get selected content from code editor
+function getSelectedHtmlFromAce() {
   try {
-    const bodyRegex = /<body[^>]*>([\s\S]*?)<\/body>/i;
-    const bodyMatch = bodyRegex.exec(html);
+    const aceEditor = ace.edit('editor');
+    const selection = aceEditor.getSelection();
+    const range = selection.getRange();
     
-    if (bodyMatch && bodyMatch[1]) {
-      return bodyMatch[1];
+    // If no selection, return null
+    if (range.isEmpty()) {
+      return null;
     }
     
-    // If there's no body tag, return the entire HTML except for any head section
-    const headRegex = /<head[^>]*>[\s\S]*?<\/head>/i;
-    return html.replace(headRegex, '');
-  } catch (error) {
-    console.error('Error extracting body content:', error);
-    return html; // Return original content as fallback
+    // Save selection range
+    window.lastSelectionRange = range;
+    
+    // Get selected text
+    return aceEditor.session.getTextRange(range);
+  } catch (e) {
+    console.error('Error getting selection:', e);
+    return null;
   }
 }
 
-// Safe update of WYSIWYG editor from code editor
-function safeUpdateWysiwygEditor() {
+// Extract content for editing
+function extractEditableContent(html) {
+  // Store original content
+  originalContent = html;
+  
+  // Check for selection first
+  const selection = getSelectedHtmlFromAce();
+  if (selection) {
+    editTarget = 'selection';
+    return selection;
+  }
+  
+  // Try to extract body content if available
+  const bodyMatch = /<body[^>]*>([\s\S]*?)<\/body>/i.exec(html);
+  if (bodyMatch && bodyMatch[1]) {
+    editTarget = 'body';
+    return bodyMatch[1];
+  }
+  
+  // Fallback to full content
+  editTarget = 'full';
+  return html;
+}
+
+// Sync from code editor to visual editor
+function syncToVisualEditor() {
   if (!quillEditor || !editorInitialized) return;
   
   try {
     isUpdatingFromCodeEditor = true;
     
     // Get content from Ace editor
-    const html = ace.edit('editor').getValue();
+    const aceEditor = ace.edit('editor');
+    const html = aceEditor.getValue();
     
-    // Extract body content 
-    const bodyContent = extractBodyContent(html);
+    // Extract editable content
+    const content = extractEditableContent(html);
     
     // Clear existing content
     quillEditor.setText('');
     
-    // Insert safely using clipboard API
-    quillEditor.clipboard.dangerouslyPasteHTML(0, bodyContent);
+    // Set content in Quill
+    quillEditor.clipboard.dangerouslyPasteHTML(0, content);
     
-    console.log('Updated WYSIWYG editor successfully');
+    console.log('Content loaded into visual editor');
   } catch (error) {
-    console.error('Error updating WYSIWYG editor:', error);
+    console.error('Error updating visual editor:', error);
   } finally {
-    // Reset flag with delay
     setTimeout(() => {
       isUpdatingFromCodeEditor = false;
     }, 100);
   }
 }
 
-// Safe update of code editor from WYSIWYG editor
-function safeUpdateCodeEditor() {
+// Sync from visual editor to code editor
+function syncToCodeEditor() {
   if (!quillEditor || !editorInitialized) return;
   
   try {
     isUpdatingFromWysiwyg = true;
     
-    // Get the full HTML template from Ace editor
-    const html = ace.edit('editor').getValue();
+    // Get content from visual editor
+    const content = quillEditor.root.innerHTML;
     
-    // Get content from Quill
-    let content = quillEditor.root.innerHTML;
+    // Get the full HTML from the code editor
+    const aceEditor = ace.edit('editor');
     
-    // Check if the HTML has a proper structure
-    if (/<body[^>]*>[\s\S]*<\/body>/i.test(html)) {
-      // Replace only the body content
+    // Update based on edit target
+    if (editTarget === 'selection' && window.lastSelectionRange) {
+      // Replace just the selected text
+      aceEditor.session.replace(window.lastSelectionRange, content);
+    } else if (editTarget === 'body') {
+      // Update only the body content
+      const html = originalContent || aceEditor.getValue();
+      
       const newHtml = html.replace(
         /(<body[^>]*>)([\s\S]*)(<\/body>)/i,
         `$1${content}$3`
       );
-      ace.edit('editor').setValue(newHtml);
+      aceEditor.setValue(newHtml);
     } else {
-      // Just set the new content
-      ace.edit('editor').setValue(content);
+      // Full replacement as fallback
+      aceEditor.setValue(content);
     }
     
-    console.log('Updated code editor successfully');
+    // Update preview
+    if (typeof window.updatePreview === 'function') {
+      window.updatePreview();
+    }
   } catch (error) {
     console.error('Error updating code editor:', error);
   } finally {
-    // Reset flag with delay
     setTimeout(() => {
       isUpdatingFromWysiwyg = false;
     }, 100);
   }
 }
 
-// Show toast message
-function showToast(message, type = 'success') {
-  const toast = document.getElementById('toast');
-  if (!toast) return;
-  
-  // Set message
-  toast.textContent = message;
-  
-  // Set color based on type
-  toast.className = 'toast fixed bottom-4 right-4 text-white p-4 rounded shadow-lg';
-  
-  if (type === 'success') {
-    toast.classList.add('bg-green-500');
-  } else if (type === 'error') {
-    toast.classList.add('bg-red-500');
-  } else if (type === 'info') {
-    toast.classList.add('bg-blue-500');
-  }
-  
-  // Show toast
-  toast.classList.remove('hidden');
-  
-  // Hide after 3 seconds
-  setTimeout(function() {
-    toast.classList.add('hidden');
-  }, 3000);
-}
-
-// Override the original updatePreview function to handle WYSIWYG integration
-const originalUpdatePreview = window.updatePreview;
-window.updatePreview = function() {
-  // If we're in WYSIWYG mode and not already updating from WYSIWYG, sync content
-  if (!isUpdatingFromWysiwyg && 
-      document.getElementById('wysiwyg-editor') && 
-      document.getElementById('wysiwyg-editor').style.display !== 'none' && 
-      quillEditor && 
-      editorInitialized) {
-    safeUpdateCodeEditor();
-  }
-  
-  // Call the original updatePreview function
-  if (typeof originalUpdatePreview === 'function') {
-    originalUpdatePreview();
-  }
-};
-
-// Modify the template elements handler for WYSIWYG integration
+// Override template elements button to support visual editor
 const originalInitTemplateElements = window.initTemplateElements;
 window.initTemplateElements = function() {
-  // Call the original function
+  // Call original function
   if (typeof originalInitTemplateElements === 'function') {
     originalInitTemplateElements();
   }
   
-  // Update handlers for WYSIWYG editor mode
+  // Add support for visual editor
   const container = document.getElementById('template-elements-container');
   if (!container) return;
   
   const items = container.querySelectorAll('.template-element-item');
   items.forEach(item => {
-    // Get the original click handler
-    const originalClickHandler = item.onclick;
+    // Get original handler
+    const originalHandler = item.onclick;
     
-    // Replace with new handler that checks editor mode
+    // Replace with new handler
     item.onclick = function(e) {
-      const wysiwygVisible = document.getElementById('wysiwyg-editor').style.display !== 'none';
+      const visualEditorVisible = 
+        document.getElementById('wysiwyg-editor') && 
+        document.getElementById('wysiwyg-editor').style.display !== 'none';
       
-      if (wysiwygVisible && quillEditor && editorInitialized) {
-        // Get the element ID
+      if (visualEditorVisible && quillEditor && editorInitialized) {
+        // Get element code
         const elementId = this.dataset.elementId;
-        const template = window.templateElements && window.templateElements.find(t => t.id === elementId);
+        const template = window.templateElements && 
+          window.templateElements.find(t => t.id === elementId);
         
         if (template) {
           try {
-            // Insert at cursor position in Quill safely
+            // Insert at cursor in visual editor
             const range = quillEditor.getSelection(true) || { index: 0, length: 0 };
             quillEditor.clipboard.dangerouslyPasteHTML(range.index, template.code);
             
             // Close modal
             document.getElementById('template-elements-modal').classList.add('hidden');
             
-            // Update preview
-            safeUpdateCodeEditor();
-            if (typeof originalUpdatePreview === 'function') {
-              originalUpdatePreview();
-            }
+            // Sync to code editor
+            syncToCodeEditor();
           } catch (error) {
-            console.error('Error inserting template element:', error);
+            console.error('Error inserting template:', error);
           }
         }
-      } else {
+      } else if (typeof originalHandler === 'function') {
         // Use original handler for code editor
-        if (typeof originalClickHandler === 'function') {
-          originalClickHandler.call(this, e);
-        }
+        originalHandler.call(this, e);
       }
     };
   });
 };
 
-// Similar modification for liquid variables
+// Handle liquid variables in visual editor
 const originalInitLiquidVariables = window.initLiquidVariables;
 window.initLiquidVariables = function() {
-  // Call the original function
+  // Call original function
   if (typeof originalInitLiquidVariables === 'function') {
     originalInitLiquidVariables();
   }
   
-  // Update handlers for WYSIWYG editor mode
+  // Add visual editor support
   const container = document.getElementById('liquid-vars-container');
   if (!container) return;
   
   const items = container.querySelectorAll('.liquid-var-item');
   items.forEach(item => {
-    // Get the original click handler
-    const originalClickHandler = item.onclick;
+    // Get original handler
+    const originalHandler = item.onclick;
     
-    // Replace with new handler that checks editor mode
+    // Replace with new handler
     item.onclick = function(e) {
-      const wysiwygVisible = document.getElementById('wysiwyg-editor').style.display !== 'none';
+      const visualEditorVisible = 
+        document.getElementById('wysiwyg-editor') && 
+        document.getElementById('wysiwyg-editor').style.display !== 'none';
       
-      if (wysiwygVisible && quillEditor && editorInitialized) {
-        // Get the liquid variable code
+      if (visualEditorVisible && quillEditor && editorInitialized) {
+        // Get liquid variable
         const codeElement = this.querySelector('code');
         if (!codeElement) return;
         
         const liquidCode = codeElement.textContent;
         
         try {
-          // Create a span element for the liquid tag
+          // Insert at cursor position
           const range = quillEditor.getSelection(true) || { index: 0, length: 0 };
           quillEditor.clipboard.dangerouslyPasteHTML(range.index, liquidCode);
           
@@ -553,68 +415,64 @@ window.initLiquidVariables = function() {
           document.getElementById('liquid-vars-modal').classList.add('hidden');
           
           // Sync to code editor
-          safeUpdateCodeEditor();
+          syncToCodeEditor();
         } catch (error) {
           console.error('Error inserting liquid variable:', error);
         }
-      } else {
+      } else if (typeof originalHandler === 'function') {
         // Use original handler for code editor
-        if (typeof originalClickHandler === 'function') {
-          originalClickHandler.call(this, e);
-        }
+        originalHandler.call(this, e);
       }
     };
   });
 };
 
-// Similar modification for liquid blocks
+// Handle liquid blocks in visual editor
 const originalInitLiquidBlocks = window.initLiquidBlocks;
 window.initLiquidBlocks = function() {
-  // Call the original function
+  // Call original function
   if (typeof originalInitLiquidBlocks === 'function') {
     originalInitLiquidBlocks();
   }
   
-  // Update handlers for WYSIWYG editor mode
+  // Add visual editor support
   const container = document.getElementById('liquid-blocks-container');
   if (!container) return;
   
   const items = container.querySelectorAll('.liquid-block-item');
   items.forEach(item => {
-    // Get the original click handler
-    const originalClickHandler = item.onclick;
+    // Get original handler
+    const originalHandler = item.onclick;
     
-    // Replace with new handler that checks editor mode
+    // Replace with new handler
     item.onclick = function(e) {
-      const wysiwygVisible = document.getElementById('wysiwyg-editor').style.display !== 'none';
+      const visualEditorVisible = 
+        document.getElementById('wysiwyg-editor') && 
+        document.getElementById('wysiwyg-editor').style.display !== 'none';
       
-      if (wysiwygVisible && quillEditor && editorInitialized) {
-        // Get the liquid block code
+      if (visualEditorVisible && quillEditor && editorInitialized) {
+        // Get liquid block
         const preElement = this.querySelector('pre');
         if (!preElement) return;
         
         const liquidCode = preElement.textContent;
         
         try {
-          // Get cursor position
+          // Insert at cursor position
           const range = quillEditor.getSelection(true) || { index: 0, length: 0 };
-          
-          // Insert the code directly without formatting - simpler approach
           quillEditor.clipboard.dangerouslyPasteHTML(range.index, liquidCode);
           
           // Close modal
           document.getElementById('liquid-blocks-modal').classList.add('hidden');
           
           // Sync to code editor
-          safeUpdateCodeEditor();
+          syncToCodeEditor();
         } catch (error) {
           console.error('Error inserting liquid block:', error);
         }
-      } else {
+      } else if (typeof originalHandler === 'function') {
         // Use original handler for code editor
-        if (typeof originalClickHandler === 'function') {
-          originalClickHandler.call(this, e);
-        }
+        originalHandler.call(this, e);
       }
     };
   });
