@@ -114,7 +114,7 @@ function initWysiwygEditor() {
     // MODIFIED: Immediately sync code to WYSIWYG on initial load - with a delay to ensure code is ready
     setTimeout(() => {
       safeUpdateWysiwygEditor();
-    }, 300);
+    }, 500);
     
     // Dispatch event so other components know Quill is ready
     document.dispatchEvent(new Event('quillReady'));
@@ -260,6 +260,15 @@ function extractBodyContent(html) {
   }
 }
 
+// Pre-process Liquid tags to prevent them from being treated as HTML
+function preprocessLiquidTags(html) {
+  return html
+    // Wrap liquid variable tags in special spans
+    .replace(/({{\s*[^}]*}})/g, '<span class="ql-liquid" data-liquid-type="variable">$1</span>')
+    // Wrap liquid control tags in special spans  
+    .replace(/({%\s*[^%}]*\s*%})/g, '<span class="ql-liquid" data-liquid-type="control">$1</span>');
+}
+
 // Safe update of WYSIWYG editor from code editor
 function safeUpdateWysiwygEditor() {
   if (!quillEditor) return;
@@ -273,13 +282,12 @@ function safeUpdateWysiwygEditor() {
     // Extract body content 
     const bodyContent = extractBodyContent(html);
     
-    // Set content in Quill, using insertText instead of direct innerHTML
-    // This avoids the Quill "emit" error
-    quillEditor.setText(''); // Clear existing content
-    quillEditor.clipboard.dangerouslyPasteHTML(0, bodyContent);
+    // Pre-process the liquid tags to protect them
+    const preprocessedContent = preprocessLiquidTags(bodyContent);
     
-    // Highlight liquid tags
-    highlightLiquidTags();
+    // Clear existing content and insert new content
+    quillEditor.setText('');
+    quillEditor.clipboard.dangerouslyPasteHTML(0, preprocessedContent);
     
     console.log('Updated WYSIWYG editor successfully');
   } catch (error) {
@@ -290,6 +298,14 @@ function safeUpdateWysiwygEditor() {
       isUpdatingFromCodeEditor = false;
     }, 100);
   }
+}
+
+// Replace Quill's span for liquid tags with the raw liquid tag
+function processMergedContent(content) {
+  // Replace all occurrences of the wrapped liquid tags with the original tag
+  return content
+    .replace(/<span[^>]*class="ql-liquid"[^>]*data-liquid-type="variable"[^>]*>(.*?)<\/span>/g, '$1')
+    .replace(/<span[^>]*class="ql-liquid"[^>]*data-liquid-type="control"[^>]*>(.*?)<\/span>/g, '$1');
 }
 
 // Safe update of code editor from WYSIWYG editor
@@ -332,15 +348,6 @@ function safeUpdateCodeEditor() {
   }
 }
 
-// Process content to properly handle liquid tags
-function processMergedContent(content) {
-  // Replace liquid tag wrappers with the actual liquid tags
-  content = content.replace(/<span[^>]*class="ql-liquid"[^>]*data-liquid-type="variable"[^>]*>(.*?)<\/span>/g, '$1');
-  content = content.replace(/<span[^>]*class="ql-liquid"[^>]*data-liquid-type="control"[^>]*>(.*?)<\/span>/g, '$1');
-  
-  return content;
-}
-
 // Setup special handling for liquid tags
 function initLiquidTagHighlighting() {
   // CSS for highlighting liquid tags
@@ -374,7 +381,7 @@ function initLiquidTagHighlighting() {
       if (source === 'user' && !isUpdatingFromCodeEditor) {
         // Use a timeout to avoid recursion
         setTimeout(() => {
-          highlightLiquidTags();
+          safeSynchronizeContent();
         }, 100);
       }
     });
@@ -387,7 +394,7 @@ function initLiquidTagHighlighting() {
           if (source === 'user' && !isUpdatingFromCodeEditor) {
             // Use a timeout to avoid recursion
             setTimeout(() => {
-              highlightLiquidTags();
+              safeSynchronizeContent();
             }, 100);
           }
         });
@@ -396,39 +403,14 @@ function initLiquidTagHighlighting() {
   }
 }
 
-// Highlight liquid tags in the editor
-function highlightLiquidTags() {
-  if (!quillEditor || !quillEditor.root) return;
+// Safer synchronization of content that prevents recursive updates
+function safeSynchronizeContent() {
+  // Update code editor from Quill
+  safeUpdateCodeEditor();
   
-  // Using a simpler approach to avoid MutationObserver issues
-  try {
-    // Get HTML content from quill
-    const content = quillEditor.root.innerHTML;
-    
-    // Process liquid tags directly
-    const processedContent = content
-      // Variable tags
-      .replace(/({{\s*[^}]*}})/g, 
-        '<span class="ql-liquid" data-liquid-type="variable">$1</span>')
-      // Control flow tags
-      .replace(/({%\s*[^%}]*\s*%})/g, 
-        '<span class="ql-liquid" data-liquid-type="control">$1</span>');
-    
-    // Only update if there are changes to avoid recursion
-    if (processedContent !== content) {
-      // We need to temporarily disable the observer to prevent an infinite loop
-      isUpdatingFromCodeEditor = true;
-      
-      // Apply the processed content back to the editor
-      quillEditor.clipboard.dangerouslyPasteHTML(0, processedContent);
-      
-      // Re-enable observer
-      setTimeout(() => {
-        isUpdatingFromCodeEditor = false;
-      }, 100);
-    }
-  } catch (error) {
-    console.error('Error highlighting liquid tags:', error);
+  // Then update preview
+  if (typeof window.updatePreview === 'function') {
+    window.updatePreview();
   }
 }
 
@@ -503,14 +485,12 @@ window.initTemplateElements = function() {
         
         if (template) {
           try {
+            // Process any liquid tags in the template
+            const processedCode = preprocessLiquidTags(template.code);
+            
             // Insert at cursor position in Quill safely
             const range = quillEditor.getSelection(true) || { index: 0, length: 0 };
-            quillEditor.clipboard.dangerouslyPasteHTML(range.index, template.code);
-            
-            // Highlight liquid tags with delay to allow rendering
-            setTimeout(() => {
-              highlightLiquidTags();
-            }, 50);
+            quillEditor.clipboard.dangerouslyPasteHTML(range.index, processedCode);
             
             // Close modal
             document.getElementById('template-elements-modal').classList.add('hidden');
@@ -617,10 +597,7 @@ window.initLiquidBlocks = function() {
           const range = quillEditor.getSelection(true) || { index: 0, length: 0 };
           
           // Process the liquid block code to wrap control tags
-          let processedCode = liquidCode.replace(/({%\s*[^%}]*\s*%})/g, 
-            '<span class="ql-liquid" data-liquid-type="control">$1</span>');
-          processedCode = processedCode.replace(/({{\s*[^}]*}})/g, 
-            '<span class="ql-liquid" data-liquid-type="variable">$1</span>');
+          const processedCode = preprocessLiquidTags(liquidCode);
           
           // Insert the processed code
           quillEditor.clipboard.dangerouslyPasteHTML(range.index, processedCode);
@@ -777,3 +754,4 @@ document.addEventListener('DOMContentLoaded', function() {
     clearInterval(checkQuill);
   }, 10000);
 });
+window.initLiquidVariables = originalInitLiquidVariables;
