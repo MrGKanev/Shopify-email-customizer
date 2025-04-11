@@ -40,18 +40,13 @@ function copyMinifiedHTML() {
         const successful = document.execCommand('copy');
         
         // Show success or error message
-        const toast = document.getElementById('toast');
-        toast.textContent = successful ? 
-            'Minified HTML copied to clipboard!' : 
-            'Failed to copy HTML. Please try again.';
-        toast.classList.remove('hidden', 'bg-green-500');
-        toast.classList.add(successful ? 'bg-green-500' : 'bg-red-500');
-        
-        setTimeout(() => {
-            toast.classList.add('hidden');
-        }, 3000);
+        Toast.show(
+            successful ? 'Minified HTML copied to clipboard!' : 'Failed to copy HTML. Please try again.',
+            successful ? 'success' : 'error'
+        );
     } catch (err) {
         console.error('Error copying text: ', err);
+        Toast.show('Failed to copy HTML. Please try again.', 'error');
     }
     
     // Remove the temporary textarea

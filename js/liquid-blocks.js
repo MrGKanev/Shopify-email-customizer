@@ -140,8 +140,8 @@ function initLiquidBlocks() {
         `;
         
         itemDiv.addEventListener('click', function() {
-            editor.insert(block.code);
-            document.getElementById('liquid-blocks-modal').classList.add('hidden');
+            EditorInsertion.insertAtCursor(block.code);
+            ModalManager.close('liquid-blocks-modal');
         });
         
         container.appendChild(itemDiv);
