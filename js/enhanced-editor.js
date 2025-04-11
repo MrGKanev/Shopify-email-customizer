@@ -34,6 +34,10 @@ function createEnhancedToolbar() {
   toolbar.id = 'code-toolbar';
   toolbar.className = 'mb-2 p-2 bg-gray-100 border rounded flex flex-wrap space-x-1 space-y-1 items-center';
   
+  // Text formatting section
+  const textFormatSection = document.createElement('div');
+  textFormatSection.className = 'flex space-x-1 mr-2';
+  
   // Common text formatting buttons
   const formatButtons = [
     { id: 'format-h1', label: 'H1', tooltip: 'Heading 1 (Ctrl+1)', action: () => wrapSelection('<h1>', '</h1>') },
@@ -52,20 +56,141 @@ function createEnhancedToolbar() {
     button.textContent = btn.label;
     button.title = btn.tooltip;
     button.addEventListener('click', btn.action);
-    toolbar.appendChild(button);
+    textFormatSection.appendChild(button);
   });
+  
+  toolbar.appendChild(textFormatSection);
   
   // Add separator
   const separator1 = document.createElement('div');
   separator1.className = 'h-6 border-l border-gray-300 mx-1';
   toolbar.appendChild(separator1);
   
+  // Text alignment section
+  const alignmentSection = document.createElement('div');
+  alignmentSection.className = 'flex space-x-1 mr-2';
+  
+  // Text alignment buttons
+  const alignmentButtons = [
+    { id: 'align-left', icon: '⇐', tooltip: 'Align Left', action: () => wrapSelectionWithStyle('text-align: left;') },
+    { id: 'align-center', icon: '↔', tooltip: 'Align Center', action: () => wrapSelectionWithStyle('text-align: center;') },
+    { id: 'align-right', icon: '⇒', tooltip: 'Align Right', action: () => wrapSelectionWithStyle('text-align: right;') }
+  ];
+  
+  alignmentButtons.forEach(btn => {
+    const button = document.createElement('button');
+    button.id = btn.id;
+    button.className = 'px-2 py-1 border rounded hover:bg-gray-200';
+    button.innerHTML = btn.icon;
+    button.title = btn.tooltip;
+    button.addEventListener('click', btn.action);
+    alignmentSection.appendChild(button);
+  });
+  
+  toolbar.appendChild(alignmentSection);
+  
+  // Add separator
+  const separator2 = document.createElement('div');
+  separator2.className = 'h-6 border-l border-gray-300 mx-1';
+  toolbar.appendChild(separator2);
+  
+  // Font size section
+  const fontSizeSection = document.createElement('div');
+  fontSizeSection.className = 'flex items-center space-x-1 mr-2';
+  
+  const fontSizeLabel = document.createElement('span');
+  fontSizeLabel.className = 'text-xs';
+  fontSizeLabel.textContent = 'Size:';
+  fontSizeSection.appendChild(fontSizeLabel);
+  
+  const fontSizeSelect = document.createElement('select');
+  fontSizeSelect.className = 'py-1 px-1 border rounded text-sm';
+  fontSizeSelect.title = 'Font Size';
+  
+  const fontSizes = [
+    { value: '12px', label: '12px' },
+    { value: '14px', label: '14px' },
+    { value: '16px', label: '16px' },
+    { value: '18px', label: '18px' },
+    { value: '20px', label: '20px' },
+    { value: '24px', label: '24px' },
+    { value: '28px', label: '28px' },
+    { value: '32px', label: '32px' },
+  ];
+  
+  fontSizes.forEach(size => {
+    const option = document.createElement('option');
+    option.value = size.value;
+    option.textContent = size.label;
+    fontSizeSelect.appendChild(option);
+  });
+  
+  fontSizeSelect.addEventListener('change', function() {
+    wrapSelectionWithStyle(`font-size: ${this.value};`);
+  });
+  
+  fontSizeSection.appendChild(fontSizeSelect);
+  toolbar.appendChild(fontSizeSection);
+  
+  // Add separator
+  const separator3 = document.createElement('div');
+  separator3.className = 'h-6 border-l border-gray-300 mx-1';
+  toolbar.appendChild(separator3);
+  
+  // Color picker section
+  const colorSection = document.createElement('div');
+  colorSection.className = 'flex items-center space-x-2 mr-2';
+  
+  // Text color
+  const textColorLabel = document.createElement('span');
+  textColorLabel.className = 'text-xs';
+  textColorLabel.textContent = 'Text:';
+  colorSection.appendChild(textColorLabel);
+  
+  const textColorPicker = document.createElement('input');
+  textColorPicker.type = 'color';
+  textColorPicker.className = 'w-6 h-6 border rounded cursor-pointer';
+  textColorPicker.value = '#000000';
+  textColorPicker.title = 'Text Color';
+  textColorPicker.addEventListener('change', function() {
+    wrapSelectionWithStyle(`color: ${this.value};`);
+  });
+  colorSection.appendChild(textColorPicker);
+  
+  // Background color
+  const bgColorLabel = document.createElement('span');
+  bgColorLabel.className = 'text-xs';
+  bgColorLabel.textContent = 'BG:';
+  colorSection.appendChild(bgColorLabel);
+  
+  const bgColorPicker = document.createElement('input');
+  bgColorPicker.type = 'color';
+  bgColorPicker.className = 'w-6 h-6 border rounded cursor-pointer';
+  bgColorPicker.value = '#ffffff';
+  bgColorPicker.title = 'Background Color';
+  bgColorPicker.addEventListener('change', function() {
+    wrapSelectionWithStyle(`background-color: ${this.value};`);
+  });
+  colorSection.appendChild(bgColorPicker);
+  
+  toolbar.appendChild(colorSection);
+  
+  // Add separator
+  const separator4 = document.createElement('div');
+  separator4.className = 'h-6 border-l border-gray-300 mx-1';
+  toolbar.appendChild(separator4);
+  
   // Add email component buttons
   const componentButtons = [
     { id: 'insert-button', label: 'Button', tooltip: 'Insert CTA Button', action: insertButton },
     { id: 'insert-table', label: 'Table', tooltip: 'Insert Table', action: insertTable },
-    { id: 'insert-divider', label: 'Divider', tooltip: 'Insert Divider', action: insertDivider }
+    { id: 'insert-divider', label: 'Divider', tooltip: 'Insert Divider', action: insertDivider },
+    { id: 'insert-image', label: 'Image', tooltip: 'Insert Image', action: insertImage },
+    { id: 'insert-spacer', label: 'Spacer', tooltip: 'Insert Vertical Space', action: insertSpacer }
   ];
+  
+  const componentSection = document.createElement('div');
+  componentSection.className = 'flex space-x-1 mr-2';
   
   componentButtons.forEach(btn => {
     const button = document.createElement('button');
@@ -74,13 +199,45 @@ function createEnhancedToolbar() {
     button.textContent = btn.label;
     button.title = btn.tooltip;
     button.addEventListener('click', btn.action);
-    toolbar.appendChild(button);
+    componentSection.appendChild(button);
   });
   
+  toolbar.appendChild(componentSection);
+  
   // Add separator
-  const separator2 = document.createElement('div');
-  separator2.className = 'h-6 border-l border-gray-300 mx-1';
-  toolbar.appendChild(separator2);
+  const separator5 = document.createElement('div');
+  separator5.className = 'h-6 border-l border-gray-300 mx-1';
+  toolbar.appendChild(separator5);
+  
+  // Undo/Redo section
+  const undoRedoSection = document.createElement('div');
+  undoRedoSection.className = 'flex space-x-1 mr-2';
+  
+  const undoButton = document.createElement('button');
+  undoButton.id = 'undo-button';
+  undoButton.className = 'px-2 py-1 border rounded hover:bg-gray-200';
+  undoButton.innerHTML = '↩';
+  undoButton.title = 'Undo (Ctrl+Z)';
+  undoButton.addEventListener('click', function() {
+    const aceEditor = ace.edit("editor");
+    aceEditor.undo();
+    aceEditor.focus();
+  });
+  undoRedoSection.appendChild(undoButton);
+  
+  const redoButton = document.createElement('button');
+  redoButton.id = 'redo-button';
+  redoButton.className = 'px-2 py-1 border rounded hover:bg-gray-200';
+  redoButton.innerHTML = '↪';
+  redoButton.title = 'Redo (Ctrl+Shift+Z)';
+  redoButton.addEventListener('click', function() {
+    const aceEditor = ace.edit("editor");
+    aceEditor.redo();
+    aceEditor.focus();
+  });
+  undoRedoSection.appendChild(redoButton);
+  
+  toolbar.appendChild(undoRedoSection);
   
   // Add format cleaning button
   const cleanButton = document.createElement('button');
@@ -294,6 +451,59 @@ function wrapSelection(startTag, endTag) {
 }
 
 /**
+ * Helper function to wrap selected text with a style attribute
+ */
+function wrapSelectionWithStyle(styleValue) {
+  const aceEditor = ace.edit("editor");
+  const selection = aceEditor.getSelection();
+  const range = selection.getRange();
+  
+  // Get selected text
+  const selectedText = aceEditor.session.getTextRange(range);
+  
+  if (selectedText.length === 0) {
+    // If no text is selected, create a span with the style
+    const styledSpan = `<span style="${styleValue}">Text here</span>`;
+    aceEditor.session.replace(range, styledSpan);
+    
+    // Position cursor after "Text "
+    const cursor = range.start;
+    selection.moveCursorTo(cursor.row, cursor.column + styledSpan.indexOf('Text ') + 5);
+  } else {
+    // Check if selected text already has HTML tags
+    const hasHtmlTags = /<[^>]+>/g.test(selectedText);
+    
+    if (hasHtmlTags) {
+      // If it already has HTML tags, add style to the outermost tag
+      const modifiedText = selectedText.replace(/<([^\s>]+)([^>]*)>/, function(match, tag, attributes) {
+        // Check if the tag already has a style attribute
+        if (attributes.includes('style="')) {
+          // Append to existing style attribute
+          return match.replace(/style="([^"]*)"/, function(styleMatch, existingStyle) {
+            return `style="${existingStyle}; ${styleValue}"`;
+          });
+        } else {
+          // Add new style attribute
+          return `<${tag}${attributes} style="${styleValue}">`;
+        }
+      });
+      
+      aceEditor.session.replace(range, modifiedText);
+    } else {
+      // Wrap with a styled span
+      const styledText = `<span style="${styleValue}">${selectedText}</span>`;
+      aceEditor.session.replace(range, styledText);
+    }
+  }
+  
+  // Focus editor
+  aceEditor.focus();
+  
+  // Update preview
+  updatePreview();
+}
+
+/**
  * Insert text at the current cursor position
  */
 function insertAtCursor(text) {
@@ -386,6 +596,32 @@ function insertDivider() {
 }
 
 /**
+ * Insert an image at the current cursor position
+ */
+function insertImage() {
+  const altText = prompt('Enter alt text:', 'Image description');
+  
+  const imageHtml = `<img src="img/logo.svg" alt="${altText || ''}" style="max-width: 100%; height: auto;">`;
+  
+  insertAtCursor(imageHtml);
+  updatePreview();
+}
+
+/**
+ * Insert a vertical spacer at the current cursor position
+ */
+function insertSpacer() {
+  const height = prompt('Spacer height in pixels:', '20');
+  
+  if (height) {
+    const spacerHtml = `<div style="height: ${height}px;"></div>`;
+    
+    insertAtCursor(spacerHtml);
+    updatePreview();
+  }
+}
+
+/**
  * Clean HTML formatting for better readability
  */
 function cleanHtmlFormatting() {
@@ -443,11 +679,43 @@ function showToast(message, type = 'success') {
 }
 
 /**
+ * Update the help modal to include new features
+ */
+function updateHelpModal() {
+  const helpModal = document.getElementById('editor-help-modal');
+  if (!helpModal) return;
+  
+  const helpContent = helpModal.querySelector('.space-y-4');
+  if (!helpContent) return;
+  
+  // Add new section for color and formatting tools
+  const newSection = document.createElement('div');
+  newSection.innerHTML = `
+    <h4 class="font-bold">Color & Formatting Tools</h4>
+    <p>New tools to enhance your email templates:</p>
+    <ul class="list-disc pl-5 mt-2">
+      <li><strong>Text Color</strong> - Change the color of selected text</li>
+      <li><strong>Background Color</strong> - Add background color to selected text</li>
+      <li><strong>Font Size</strong> - Change text size</li>
+      <li><strong>Text Alignment</strong> - Align text left, center, or right</li>
+      <li><strong>Image Insertion</strong> - Add images with alt text</li>
+      <li><strong>Spacer</strong> - Add vertical spacing</li>
+      <li><strong>Undo/Redo</strong> - Reverse or reapply changes</li>
+    </ul>
+  `;
+  
+  helpContent.appendChild(newSection);
+}
+
+/**
  * Add close handlers to help modal
  */
 document.addEventListener('DOMContentLoaded', function() {
   const helpModal = document.getElementById('editor-help-modal');
   if (helpModal) {
+    // Update help modal with new features
+    updateHelpModal();
+    
     // Close when clicking close button
     const closeBtn = helpModal.querySelector('.close-modal');
     if (closeBtn) {

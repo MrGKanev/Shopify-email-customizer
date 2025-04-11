@@ -171,53 +171,80 @@
   </div>
 
   <!-- Help Modal -->
-  <div id="editor-help-modal"
-    class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50"
-    role="dialog" aria-labelledby="editor-help-title" aria-modal="true">
-    <div class="relative mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
-      <div class="flex justify-between items-center mb-4">
-        <h3 id="editor-help-title" class="text-lg font-medium">Editor Help</h3>
-        <button class="close-modal text-gray-400 hover:text-gray-500" aria-label="Close modal">
-          <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-          </svg>
-        </button>
+<!-- Help Modal -->
+<div id="editor-help-modal"
+  class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50"
+  role="dialog" aria-labelledby="editor-help-title" aria-modal="true">
+  <div class="relative mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+    <div class="flex justify-between items-center mb-4">
+      <h3 id="editor-help-title" class="text-lg font-medium">Editor Help</h3>
+      <button class="close-modal text-gray-400 hover:text-gray-500" aria-label="Close modal">
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+    <div class="space-y-4 max-h-96 overflow-y-auto">
+      <div>
+        <h4 class="font-bold">Editor Shortcuts</h4>
+        <p>Use keyboard shortcuts for quick formatting:</p>
+        <ul class="list-disc pl-5 mt-2">
+          <li><strong>Ctrl+B</strong> - Bold text</li>
+          <li><strong>Ctrl+I</strong> - Italic text</li>
+          <li><strong>Ctrl+K</strong> - Insert link</li>
+          <li><strong>Ctrl+1</strong> - Heading 1</li>
+          <li><strong>Ctrl+2</strong> - Heading 2</li>
+          <li><strong>Ctrl+P</strong> - Paragraph</li>
+          <li><strong>Ctrl+Z</strong> - Undo</li>
+          <li><strong>Ctrl+Shift+Z</strong> - Redo</li>
+        </ul>
       </div>
-      <div class="space-y-4">
-        <div>
-          <h4 class="font-bold">Editor Shortcuts</h4>
-          <p>Use keyboard shortcuts for quick formatting:</p>
-          <ul class="list-disc pl-5 mt-2">
-            <li><strong>Ctrl+B</strong> - Bold text</li>
-            <li><strong>Ctrl+I</strong> - Italic text</li>
-            <li><strong>Ctrl+K</strong> - Insert link</li>
-            <li><strong>Ctrl+1</strong> - Heading 1</li>
-            <li><strong>Ctrl+2</strong> - Heading 2</li>
-            <li><strong>Ctrl+P</strong> - Paragraph</li>
-          </ul>
-        </div>
-        <div>
-          <h4 class="font-bold">Working with Liquid Tags</h4>
-          <p>Use the "Liquid Variables" and "Custom Liquid" buttons to insert Shopify Liquid code.</p>
-        </div>
-        <div>
-          <h4 class="font-bold">Email Components</h4>
-          <p>Use the toolbar buttons above the editor to insert common email elements like buttons, tables, and
-            dividers.</p>
-        </div>
-        <div>
-          <h4 class="font-bold">Template Elements</h4>
-          <p>Click "Insert Template Element" to add Shopify-specific email components like order details and shipping
-            information.</p>
-        </div>
-        <div>
-          <h4 class="font-bold">Preview</h4>
-          <p>Use the "Update Preview" button to see how your email will look. Toggle between desktop and mobile views.
-          </p>
-        </div>
+      <div>
+        <h4 class="font-bold">Working with Liquid Tags</h4>
+        <p>Use the "Liquid Variables" and "Custom Liquid" buttons to insert Shopify Liquid code.</p>
+      </div>
+      <div>
+        <h4 class="font-bold">Email Components</h4>
+        <p>Use the toolbar buttons above the editor to insert common email elements like buttons, tables, and
+          dividers.</p>
+      </div>
+      <div>
+        <h4 class="font-bold">Text Formatting Tools</h4>
+        <p>The editor includes powerful text formatting tools:</p>
+        <ul class="list-disc pl-5 mt-2">
+          <li><strong>Text Color</strong> - Change the color of selected text</li>
+          <li><strong>Background Color</strong> - Add background color to selected text</li>
+          <li><strong>Font Size</strong> - Change the size of selected text</li>
+          <li><strong>Text Alignment</strong> - Align text left, center, or right</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-bold">Media & Layout Tools</h4>
+        <p>Insert and format media elements:</p>
+        <ul class="list-disc pl-5 mt-2">
+          <li><strong>Image</strong> - Insert an image with alt text</li>
+          <li><strong>Button</strong> - Create a styled call-to-action button</li>
+          <li><strong>Table</strong> - Create structured data with customizable rows and columns</li>
+          <li><strong>Divider</strong> - Add a horizontal line separator</li>
+          <li><strong>Spacer</strong> - Add vertical spacing between elements</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-bold">Template Elements</h4>
+        <p>Click "Insert Template Element" to add Shopify-specific email components like order details and shipping
+          information.</p>
+      </div>
+      <div>
+        <h4 class="font-bold">Preview</h4>
+        <p>Use the "Update Preview" button to see how your email will look. Toggle between desktop and mobile views.</p>
+      </div>
+      <div>
+        <h4 class="font-bold">HTML Cleanup</h4>
+        <p>Click "Clean HTML" to improve the formatting and readability of your code.</p>
       </div>
     </div>
   </div>
+</div>
 
   <div class="toast hidden fixed bottom-4 right-4 text-white p-4 rounded shadow-lg" id="toast" role="alert"
     aria-live="assertive">

@@ -1,5 +1,5 @@
 /**
- * Improved Preview functionality
+ * Preview functionality
  */
 
 // Update preview function
@@ -11,8 +11,10 @@ function updatePreview() {
     // Replace Liquid tags with sample data for preview
     let html = editor.getValue()
         .replace(/{{ shop.name }}/g, 'Your Shopify Store')
-        // Use local image path for logo
-        .replace(/{{ shop.email_logo_url }}/g, '../img/logo.svg')
+        // Use local image path for all images in the template, not just the logo
+        .replace(/{{ shop.email_logo_url }}/g, 'img/logo.svg')
+        .replace(/{{ line_item.image \| img_url: '.*?' }}/g, 'img/logo.svg')
+        // Standard replacements
         .replace(/{{ customer.first_name }}/g, 'John')
         .replace(/{{ order.name }}/g, '#1001')
         .replace(/{{ order.created_at \| date: "%B %d, %Y" }}/g, 'March 27, 2025')
@@ -34,7 +36,11 @@ function updatePreview() {
         .replace(/{{ order.shipping_address.country }}/g, 'United States')
         .replace(/{{ order.shipping_lines\[0\].title }}/g, 'Standard Shipping')
         .replace(/{{ shop.email }}/g, 'support@yourstore.com')
-        .replace(/{{ 'now' \| date: "%Y" }}/g, '2025');
+        .replace(/{{ shop.domain }}/g, 'yourstore.com')
+        .replace(/{{ 'now' \| date: "%Y" }}/g, '2025')
+        .replace(/{{ order.customer.name }}/g, 'John Doe')
+        .replace(/{{ order.customer.email }}/g, 'john.doe@example.com')
+        .replace(/{{ order.customer.phone }}/g, '(555) 123-4567');
         
     // Handle Liquid for loops
     html = html.replace(/{% for line_item in order.line_items %}([\s\S]*?){% endfor %}/g, (match, content) => {
@@ -46,6 +52,18 @@ function updatePreview() {
     html = html.replace(/{% if (.*?) %}([\s\S]*?){% endif %}/g, (match, condition, content) => {
         // For preview, just include the content
         return content;
+    });
+    
+    // Handle Liquid else statements
+    html = html.replace(/{% else %}([\s\S]*?)(?:{% endif %}|{% elsif)/g, (match, content, closing) => {
+        // Skip else content for preview
+        return closing ? closing : '';
+    });
+    
+    // Handle Liquid cycles
+    html = html.replace(/{% cycle '([^']*?)'(?:, '([^']*?)')*? %}/g, (match, firstValue) => {
+        // Just use the first value for preview
+        return firstValue;
     });
         
     previewDocument.write(html);
