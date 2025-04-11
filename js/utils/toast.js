@@ -19,9 +19,14 @@ const Toast = {
   },
   
   // Show a toast message
-  show: function(message, type = 'success', timeout = this.defaultTimeout) {
+  show: function(message, type = 'success', timeout) {
     if (!this.element) {
       this.init();
+    }
+    
+    // Use default timeout if none provided
+    if (timeout === undefined) {
+      timeout = this.defaultTimeout;
     }
     
     // Clear any existing timer
