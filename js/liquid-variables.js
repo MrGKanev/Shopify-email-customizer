@@ -89,8 +89,8 @@ function initLiquidVariables() {
         `;
         
         itemDiv.addEventListener('click', function() {
-            editor.insert(variable.code);
-            document.getElementById('liquid-vars-modal').classList.add('hidden');
+            EditorInsertion.insertAtCursor(variable.code);
+            ModalManager.close('liquid-vars-modal');
         });
         
         container.appendChild(itemDiv);

@@ -222,8 +222,8 @@ function initTemplateElements() {
             const template = templateElements.find(t => t.id === elementId);
             
             if (template) {
-                editor.insert(template.code);
-                document.getElementById('template-elements-modal').classList.add('hidden');
+                EditorInsertion.insertAtCursor(template.code);
+                ModalManager.close('template-elements-modal');
             }
         });
         

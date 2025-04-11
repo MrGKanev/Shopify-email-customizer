@@ -4,68 +4,24 @@
 
 // Initialize modal event handlers
 function initModals() {
-    // Button click handlers to open modals
-    const templateElementsBtn = document.getElementById('template-elements-btn');
-    const liquidBlocksBtn = document.getElementById('liquid-blocks-btn');
-    const liquidVarsBtn = document.getElementById('liquid-vars-btn');
-    
-    if (templateElementsBtn) {
-        templateElementsBtn.addEventListener('click', function() {
-            document.getElementById('template-elements-modal').classList.remove('hidden');
-        });
-    }
-    
-    if (liquidBlocksBtn) {
-        liquidBlocksBtn.addEventListener('click', function() {
-            document.getElementById('liquid-blocks-modal').classList.remove('hidden');
-        });
-    }
-    
-    if (liquidVarsBtn) {
-        liquidVarsBtn.addEventListener('click', function() {
-            document.getElementById('liquid-vars-modal').classList.remove('hidden');
-        });
-    }
-    
-    // Close modal buttons
-    const closeButtons = document.querySelectorAll('.close-modal');
-    closeButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const modals = document.querySelectorAll('#template-elements-modal, #liquid-blocks-modal, #liquid-vars-modal');
-            modals.forEach(modal => {
-                modal.classList.add('hidden');
-            });
-        });
-    });
-    
-    // Close modal when clicking outside
-    window.addEventListener('click', function(event) {
-        const modals = [
-            'template-elements-modal',
-            'liquid-blocks-modal',
-            'liquid-vars-modal'
-        ];
-        
-        modals.forEach(modalId => {
-            const modal = document.getElementById(modalId);
-            if (modal && event.target === modal) {
-                modal.classList.add('hidden');
-            }
-        });
-    });
+    // Register all modals
+    ModalManager
+      .register('template-elements-modal', {
+        triggerBtn: 'template-elements-btn'
+      })
+      .register('liquid-blocks-modal', {
+        triggerBtn: 'liquid-blocks-btn'
+      })
+      .register('liquid-vars-modal', {
+        triggerBtn: 'liquid-vars-btn'
+      })
+      .register('editor-help-modal');
     
     // Save button handler
     const saveBtn = document.getElementById('save-btn');
     if (saveBtn) {
         saveBtn.addEventListener('click', function() {
-            const toast = document.getElementById('toast');
-            toast.classList.remove('hidden');
-            toast.textContent = 'Template saved successfully!';
-            toast.classList.add('bg-green-500');
-            
-            setTimeout(() => {
-                toast.classList.add('hidden');
-            }, 3000);
+            Toast.show('Template saved successfully!', 'success');
         });
     }
     
